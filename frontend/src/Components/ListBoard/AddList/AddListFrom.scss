@@ -1,0 +1,25 @@
+.addListForm {
+  width: 100%;
+}
+
+.nameInput {
+  width: inherit;
+  box-sizing: border-box;
+}
+
+.addButton {
+  display: block;
+  outline: none;
+  border: none;
+  color: #ffffff;
+  background-color: #61bd4f;
+  border-radius: 3px;
+  padding: 4px;
+  font-weight: 400;
+  margin: 4px 0 0;
+}
+
+.addButton:hover {
+  background-color: lightgreen;
+  cursor: pointer;
+}
