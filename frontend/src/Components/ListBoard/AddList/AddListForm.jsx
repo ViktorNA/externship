@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 import styles from './AddListFrom.scss';
 import commonStyles from '../commonStyles.scss';
 
-function AddListFrom({addList}) {
+const AddListFrom = ({addList}) => {
   const [listName, setListName] = useState('');
   const submitFrom = (e) => {
     e.preventDefault();
@@ -23,6 +23,6 @@ function AddListFrom({addList}) {
       </form>
     </div>
   )
-}
+};
 
 export default AddListFrom;

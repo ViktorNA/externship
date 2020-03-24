@@ -3,7 +3,7 @@ import AddListFrom from './AddList/AddListForm.jsx';
 import List from './List/List.jsx';
 import styles from './ListBoard.scss';
 
-function ListBoard() {
+const ListBoard = () => {
   const [lists, setLists] = useState([]);
   const addList = (list) => {
     setLists([...lists, list])
@@ -17,6 +17,6 @@ function ListBoard() {
       <AddListFrom addList={addList}/>
     </div>
   )
-}
+};
 
 export default ListBoard;

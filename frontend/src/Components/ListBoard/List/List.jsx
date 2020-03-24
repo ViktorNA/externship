@@ -2,7 +2,7 @@ import React from 'react';
 import styles from  './List.scss';
 import commonStyles from '../commonStyles.scss';
 
-function List({listName, id, deleteList}) {
+const List = ({listName, id, deleteList}) => {
   const deleteOnClick =() => {
     deleteList(id);
   };
@@ -14,6 +14,6 @@ function List({listName, id, deleteList}) {
       <button onClick={deleteOnClick}>Delete</button>
     </div>
   )
-}
+};
 
 export default List;
