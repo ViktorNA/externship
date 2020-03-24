@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import { v4 as uuid } from 'uuid';
+import boarStyles from '../ListBoard.scss';
 import styles from './AddListFrom.scss';
-import commonStyles from '../commonStyles.scss';
+import {Draggable} from 'react-beautiful-dnd';
 
-const AddListFrom = ({addList}) => {
+const AddListFrom = ({addList, id, index}) => {
   const [listName, setListName] = useState('');
   const submitFrom = (e) => {
     e.preventDefault();
@@ -11,7 +12,9 @@ const AddListFrom = ({addList}) => {
     setListName('');
   };
   return (
-    <div className={commonStyles.container}>
+    <Draggable draggableId={id} index={index} isDragDisabled={true}>
+    {(provided) => (
+    <div className={boarStyles.boardItem} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
       <form className={styles.addListForm} onSubmit={submitFrom}>
         <input
           className={styles.nameInput}
@@ -21,7 +24,8 @@ const AddListFrom = ({addList}) => {
         />
         <button className={styles.addButton}>Add list</button>
       </form>
-    </div>
+    </div>)}
+</Draggable>
   )
 };
 

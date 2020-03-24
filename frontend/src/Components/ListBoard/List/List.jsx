@@ -1,18 +1,21 @@
 import React from 'react';
-import styles from  './List.scss';
-import commonStyles from '../commonStyles.scss';
+import {Draggable} from 'react-beautiful-dnd';
+import styles from '../ListBoard.scss';
 
-const List = ({listName, id, deleteList}) => {
+const List = ({listName, index, id, deleteList}) => {
   const deleteOnClick =() => {
     deleteList(id);
   };
   return(
-    <div className={commonStyles.container}>
-      <div>
-        {listName}
-      </div>
-      <button onClick={deleteOnClick}>Delete</button>
-    </div>
+    <Draggable draggableId={id} index={index}>
+      {(provided) => (
+        <div className={styles.boardItem} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+          <div>
+            {listName}
+          </div>
+          <button onClick={deleteOnClick}>Delete</button>
+        </div>)}
+    </Draggable>
   )
 };
 

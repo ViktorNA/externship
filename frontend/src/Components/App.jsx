@@ -5,7 +5,7 @@ import './App.scss';
 
 const App = () => (
   <div>
-     <ListBoard/>
+     <ListBoard boardId={'1'}/>
   </div>
 );
 export default hot(App);
