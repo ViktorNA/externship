@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/lists")
 @CrossOrigin
@@ -15,14 +17,30 @@ public class ListController {
   @Autowired ListService listService;
 
   @PostMapping
-  public ResponseEntity<?> addList(@RequestBody ListEntity listEntity) {
+  public ListEntity saveList(@RequestBody ListEntity listEntity, @RequestParam Long boardId) {
+    return listService.saveList(listEntity, boardId);
+  }
 
-    ListEntity responseEntity = listService.saveList(listEntity);
-    return new ResponseEntity<>(responseEntity, HttpStatus.CREATED);
+  @PutMapping
+  public ListEntity updateList(@RequestBody ListEntity listEntity) {
+    return listService.updateList(listEntity);
+  }
+
+  @DeleteMapping
+  public void deleteList(@RequestParam Long boardId, Long listId) {
+    listService.deleteList(boardId, listId);
+  }
+
+  @PutMapping("removeFromTo")
+  public void removeCardFromTo(
+      @RequestParam Long sourceBoardId,
+      @RequestParam Long destinationBoardId,
+      @RequestParam Long listId) {
+    listService.removeListFromTo(sourceBoardId, destinationBoardId, listId);
   }
 
   @GetMapping
-  public Iterable<ListEntity> getAllLists() {
+  public List<ListEntity> getAllLists() {
     return listService.getAllLists();
   }
 
@@ -32,7 +50,7 @@ public class ListController {
   }
 
   @PostMapping("swapIndexes")
-  public void swapIndexes(@RequestParam Integer index1, @RequestParam Integer index2){
+  public void swapIndexes(@RequestParam Integer index1, @RequestParam Integer index2) {
     listService.swapIndexes(index1, index2);
   }
 }

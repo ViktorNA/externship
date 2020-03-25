@@ -16,7 +16,6 @@ const ListBoard = ({boardId}) => {
   };
   const onDragEnd = (result) => {
     const {destination, source} = result;
-    console.log(result);
     if(!destination) return;
     if(
       destination.droppableId === source.droppableId &&
@@ -26,7 +25,7 @@ const ListBoard = ({boardId}) => {
     const newLists = Array.from(lists);
     newLists.splice(source.index, 1);
     newLists.splice(destination.index, 0, draggableItem);
-    setLists(newLists);
+    setLists(newLists.map( (x, i) => ({...x, index: i})));
     //TODO: remove axios to separate file
     axios.post(`http://localhost:8080/api/lists/swapIndexes?index1=${source.index}&index2=${destination.index}`)
       .then((res) => console.log(res))
@@ -34,22 +33,23 @@ const ListBoard = ({boardId}) => {
 
   useEffect(() => {
     //TODO: remove axios to separate file
-    axios.get('http://localhost:8080/api/lists')
+    axios.get('http://localhost:8080/api/boards/boardsOfUser/1')
       .then((res) => {
-          const lists = res.data;
-          lists.sort( (a,b) => a.index - b.index)
-          setLists(res.data)
+          const lists = res.data[0].lists;
+          console.log(lists);
+          lists.sort( (a,b) => a.position - b.position);
+          setLists(lists)
     })
   }, []);
   return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId={boardId} direction={'horizontal'}>
+        <Droppable droppableId={`$s{boardId}`} direction={'horizontal'}>
           {(provided) => (
             <div className={styles.Board} ref={provided.innerRef} {...provided.droppableProps}>
               {lists.map((list) => <List
                 listName={list.name}
                 key={list.id}
-                index={list.index}
+                index={list.position}
                 id={list.id}
                 deleteList={deleteList}
               /> )}

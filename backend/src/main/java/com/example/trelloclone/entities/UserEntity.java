@@ -7,25 +7,20 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 @Data
-public class ListEntity {
+public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank(message = "Name can not be blank")
-  private String name;
-
-  @NotNull
-  private Integer position;
+  @NotBlank private String username;
 
   @OneToMany
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
   @JsonIgnoreProperties({"hibernateLazyInitializer"})
-  private List<CardEntity> cards;
+  private List<BoardEntity> boards;
 }

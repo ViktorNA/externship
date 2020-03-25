@@ -5,16 +5,16 @@ import styles from './AddListFrom.scss';
 import {Draggable} from 'react-beautiful-dnd';
 import axios from 'axios';
 
-const AddListFrom = ({addList, id, index}) => {
+const AddListFrom = ({addList, id, index, boardId}) => {
   const [listName, setListName] = useState('');
   const submitFrom = (e) => {
     e.preventDefault();
     const list = {name: listName, index: index};
     //TODO: remove axios to separate file
-    axios.post("http://localhost:8080/api/lists", list)
+    axios.post(`http://localhost:8080/api/lists?boardId=${boardId}`, list)
       .then( (res) => {
         console.log(res);
-        if(res.status === 201) {
+        if(res.status === 200) {
           addList(res.data);
           setListName('');
         }

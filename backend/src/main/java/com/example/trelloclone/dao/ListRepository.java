@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ListRepository extends JpaRepository<ListEntity, Long> {
-    ListEntity findByIndex(Integer index);
+    ListEntity findByPosition(Integer position);
 }
