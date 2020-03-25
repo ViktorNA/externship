@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@hot-loader/react-dom": "^16.13.0",
+    "axios": "^0.19.2",
     "css-loader": "^3.4.2",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",

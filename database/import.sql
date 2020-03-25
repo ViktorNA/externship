@@ -1,0 +1,9 @@
+DROP DATABASE IF EXISTS db;
+CREATE DATABASE db;
+
+DROP TABLE IF EXISTS `db`.`list` ;
+CREATE TABLE `db`.`list` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  `position` INT NOT NULL,
+  PRIMARY KEY (`id`)); 
