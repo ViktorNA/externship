@@ -8,12 +8,14 @@ import BoardsOfUser from '../Components/BoardsOfUser/BoardsOfUser.jsx';
 import ListBoard from '../Components/ListBoard/ListBoard.jsx';
 
 const MainRouter = () => {
-  const [upperLevelBoards, setUpperLevelBoards] = useState([]);
   return (
     <Router>
       <Switch>
-        <Route exact path="/" >
-          <ListBoard boardId={1}/>
+        <Route exact path="/boards">
+          <BoardsOfUser userId={1}/>
+        </Route>
+        <Route path="/boards/:boardId" >
+          <ListBoard />
         </Route>
       </Switch>
     </Router>

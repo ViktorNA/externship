@@ -23,9 +23,9 @@ public class ListEntity {
   @NotNull
   private Integer position;
 
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
-  @JsonIgnoreProperties({"hibernateLazyInitializer"})
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private List<CardEntity> cards;
 }

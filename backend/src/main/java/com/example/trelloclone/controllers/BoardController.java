@@ -42,4 +42,9 @@ public class BoardController {
   public List<BoardEntity> getBoardsOfUser(@PathVariable Long id) {
     return boardService.getBoardsOfUser(id);
   }
+
+  @GetMapping("/{id}")
+  public BoardEntity getBoardById(@PathVariable Long id) {
+    return boardService.getBoardById(id);
+  }
 }

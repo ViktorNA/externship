@@ -1,18 +1,22 @@
 import React, {useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
 import AddListFrom from './AddList/AddListForm.jsx';
 import List from './List/List.jsx';
 import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 import styles from './ListBoard.scss';
 import axios from 'axios';
+import {changeListsPositions, getBoardById} from '../../utils/APIRequests.jsx';
 
-const ListBoard = ({boardId}) => {
+const ListBoard = () => {
   const [lists, setLists] = useState([]);
+  const {boardId} = useParams();
   const addList = (list) => {
     setLists([...lists, list])
   };
-  const deleteList = (id, index) => {
+  const deleteList = (id) => {
+    const position = lists.findIndex((list) => list.id === id);
     const newLists = lists.filter(list => list.id !== id);
-    setLists(newLists.map( (list) => list.index>index?{...list, index: list.index-1}:list));
+    setLists(newLists.map( (list) => list.position>position?{...list, position: list.position-1}:list));
   };
   const onDragEnd = (result) => {
     const {destination, source} = result;
@@ -25,21 +29,12 @@ const ListBoard = ({boardId}) => {
     const newLists = Array.from(lists);
     newLists.splice(source.index, 1);
     newLists.splice(destination.index, 0, draggableItem);
-    setLists(newLists.map( (x, i) => ({...x, index: i})));
-    //TODO: remove axios to separate file
-    axios.post(`http://localhost:8080/api/lists/swapIndexes?index1=${source.index}&index2=${destination.index}`)
-      .then((res) => console.log(res))
+    setLists(newLists.map( (x, i) => ({...x, position: i})));
+    changeListsPositions(source.index, destination.index, boardId, ()=>{});
   };
 
   useEffect(() => {
-    //TODO: remove axios to separate file
-    axios.get('http://localhost:8080/api/boards/boardsOfUser/1')
-      .then((res) => {
-          const lists = res.data[0].lists;
-          console.log(lists);
-          lists.sort( (a,b) => a.position - b.position);
-          setLists(lists)
-    })
+    getBoardById(boardId, setLists);
   }, []);
   return (
       <DragDropContext onDragEnd={onDragEnd}>
@@ -47,13 +42,14 @@ const ListBoard = ({boardId}) => {
           {(provided) => (
             <div className={styles.Board} ref={provided.innerRef} {...provided.droppableProps}>
               {lists.map((list) => <List
+                boardId={boardId}
                 listName={list.name}
                 key={list.id}
                 index={list.position}
                 id={list.id}
                 deleteList={deleteList}
               /> )}
-              <AddListFrom id={"add-list-form"} index={lists.length} addList={addList}/>
+              <AddListFrom boardId={boardId} id={"add-list-form"} index={lists.length} addList={addList}/>
               {provided.placeholder}
             </div>
           )}

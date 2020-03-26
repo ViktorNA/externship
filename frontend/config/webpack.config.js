@@ -6,11 +6,14 @@ module.exports = {
     devServer: {
       contentBase: path.join(__dirname, 'dist'),
       compress: true,
-      port: 3000
+      port: 3000,
+      historyApiFallback: true
     },
    output: {
        filename: "build.js",
-       path: path.join(__dirname, "/dist")},
+       path: path.join(__dirname, "/dist"),
+       publicPath: "/"
+   },
        
   plugins:[
       new HWP(
@@ -52,4 +55,4 @@ module.exports = {
             },
     ]
    },
-} 
+};

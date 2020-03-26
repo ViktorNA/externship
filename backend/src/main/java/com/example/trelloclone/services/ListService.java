@@ -33,7 +33,7 @@ public class ListService {
   public void deleteList(Long boardId, Long listId) {
     BoardEntity boardEntity = boardRepository.getOne(boardId);
     ListEntity listEntity = listRepository.getOne(listId);
-    Integer position = boardEntity.getLists().size();
+    Integer position = listEntity.getPosition();
     boardEntity.getLists().remove(listEntity);
     reducePositions(boardEntity.getLists(), position);
     listRepository.deleteById(listId);
@@ -68,19 +68,40 @@ public class ListService {
     }
   }
 
-  public void swapIndexes(Integer index1, Integer index2) {
-    ListEntity list1 = listRepository.findByPosition(index1);
-    ListEntity list2 = listRepository.findByPosition(index2);
-    list1.setPosition(index2);
-    list2.setPosition(index1);
-    listRepository.saveAndFlush(list1);
-    listRepository.saveAndFlush(list2);
+  public void changePosition(Integer sourcePosition, Integer destinationPosition, Long boardId) {
+    BoardEntity boardEntity =  boardRepository.getOne(boardId);
+    List<ListEntity> lists = boardEntity.getLists();
+    ListEntity destinationList = null;
+    for (ListEntity list : lists) {
+      Integer position = list.getPosition();
+      if (position > sourcePosition && position <= destinationPosition) {
+        list.setPosition(position - 1);
+      }
+      if (position >= destinationPosition && position < sourcePosition) {
+        list.setPosition(position + 1);
+      }
+      if (position.equals(sourcePosition)) {
+        destinationList = list;
+      }
+    }
+    if (destinationList != null) destinationList.setPosition(destinationPosition);
+    boardEntity.setLists(lists);
+    boardRepository.saveAndFlush(boardEntity);
   }
 
   private void reducePositions(List<ListEntity> lists, Integer position) {
     for (ListEntity list : lists) {
       if (position < list.getPosition()) {
         list.setPosition(list.getPosition() - 1);
+        listRepository.saveAndFlush(list);
+      }
+    }
+  }
+
+  private void increasePositions(List<ListEntity> lists, Integer position) {
+    for (ListEntity list : lists) {
+      if (position < list.getPosition()) {
+        list.setPosition(list.getPosition() + 1);
         listRepository.saveAndFlush(list);
       }
     }

@@ -4,21 +4,18 @@ import boarStyles from '../ListBoard.scss';
 import styles from './AddListFrom.scss';
 import {Draggable} from 'react-beautiful-dnd';
 import axios from 'axios';
+import {addListToBoard} from '../../../utils/APIRequests.jsx';
 
 const AddListFrom = ({addList, id, index, boardId}) => {
   const [listName, setListName] = useState('');
+  const addListCallback = (data) => {
+    addList(data);
+    setListName('');
+  };
   const submitFrom = (e) => {
     e.preventDefault();
     const list = {name: listName, index: index};
-    //TODO: remove axios to separate file
-    axios.post(`http://localhost:8080/api/lists?boardId=${boardId}`, list)
-      .then( (res) => {
-        console.log(res);
-        if(res.status === 200) {
-          addList(res.data);
-          setListName('');
-        }
-      });
+    addListToBoard(boardId, list, addListCallback);
   };
   return (
     <Draggable draggableId={`${id}`} index={index} isDragDisabled={true}>

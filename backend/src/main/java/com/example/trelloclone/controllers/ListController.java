@@ -49,8 +49,11 @@ public class ListController {
     listService.deleteListById(id);
   }
 
-  @PostMapping("swapIndexes")
-  public void swapIndexes(@RequestParam Integer index1, @RequestParam Integer index2) {
-    listService.swapIndexes(index1, index2);
+  @PutMapping("changePosition")
+  public void changePosition(
+      @RequestParam Integer sourcePosition,
+      @RequestParam Integer destinationPosition,
+      @RequestParam Long boardId) {
+    listService.changePosition(sourcePosition, destinationPosition, boardId);
   }
 }

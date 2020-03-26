@@ -2,15 +2,11 @@ import React from 'react';
 import {Draggable} from 'react-beautiful-dnd';
 import styles from '../ListBoard.scss';
 import axios from 'axios';
+import {deleteListFromBoard} from '../../../utils/APIRequests.jsx';
 
-const List = ({listName, index, id, deleteList}) => {
+const List = ({listName, index, id, boardId, deleteList}) => {
   const deleteOnClick =() => {
-    //TODO: remove axios to separate file
-    axios.delete(`http://localhost:8080/api/lists/${id}`)
-      .then( (res) => {
-        console.log(res);
-        deleteList(id, index);
-      });
+    deleteListFromBoard(boardId, id, deleteList);
   };
   return(
     <Draggable draggableId={`${id}`} index={index}>
