@@ -18,10 +18,8 @@ public class ListService {
   public ListEntity saveList(ListEntity listEntity, Long boardId) {
     BoardEntity boardEntity = boardRepository.getOne(boardId);
     listEntity.setPosition(boardEntity.getLists().size());
-    ListEntity list = listRepository.saveAndFlush(listEntity);
-    boardEntity.getLists().add(list);
-    boardRepository.saveAndFlush(boardEntity);
-    return list;
+    listEntity.setBoard(boardEntity);
+    return listRepository.saveAndFlush(listEntity);
   }
 
   public ListEntity updateList(ListEntity listEntity) {
@@ -30,26 +28,15 @@ public class ListService {
     return listRepository.saveAndFlush(listEntity);
   }
 
-  public void deleteList(Long boardId, Long listId) {
-    BoardEntity boardEntity = boardRepository.getOne(boardId);
-    ListEntity listEntity = listRepository.getOne(listId);
-    Integer position = listEntity.getPosition();
-    boardEntity.getLists().remove(listEntity);
-    reducePositions(boardEntity.getLists(), position);
-    listRepository.deleteById(listId);
-    boardRepository.saveAndFlush(boardEntity);
-  }
-
   public void removeListFromTo(Long sourceBoardId, Long destinationBoardId, Long listId) {
     BoardEntity sourceBoardEntity = boardRepository.getOne(sourceBoardId);
     BoardEntity destinationBoardEntity = boardRepository.getOne(destinationBoardId);
     ListEntity listEntity = listRepository.getOne(listId);
-    sourceBoardEntity.getLists().remove(listEntity);
-    reducePositions(sourceBoardEntity.getLists(), listEntity.getPosition());
+    int position = listEntity.getPosition();
+    reducePositions(sourceBoardEntity.getLists(), position);
     listEntity.setPosition(destinationBoardEntity.getLists().size());
-    destinationBoardEntity.getLists().add(listEntity);
+    listEntity.setBoard(destinationBoardEntity);
     boardRepository.saveAndFlush(sourceBoardEntity);
-    boardRepository.saveAndFlush(destinationBoardEntity);
     listRepository.saveAndFlush(listEntity);
   }
 
@@ -57,15 +44,10 @@ public class ListService {
     return listRepository.findAll();
   }
 
-  public void deleteListById(Long id) {
-    Integer position = listRepository.getOne(id).getPosition();
-    listRepository.deleteById(id);
-    for (ListEntity list : listRepository.findAll()) {
-      if (list.getPosition() > position) {
-        list.setPosition(list.getPosition() - 1);
-        listRepository.saveAndFlush(list);
-      }
-    }
+  public void deleteListById(Long boardId, Long listId) {
+    Integer position = listRepository.getOne(listId).getPosition();
+    listRepository.deleteById(listId);
+    reducePositions(boardRepository.getOne(boardId).getLists(), position);
   }
 
   public void changePosition(Integer sourcePosition, Integer destinationPosition, Long boardId) {
@@ -89,20 +71,14 @@ public class ListService {
     boardRepository.saveAndFlush(boardEntity);
   }
 
+  public List<ListEntity> getListsOfBoard(Long boardId) {
+    return boardRepository.getOne(boardId).getLists();
+  }
+
   private void reducePositions(List<ListEntity> lists, Integer position) {
     for (ListEntity list : lists) {
       if (position < list.getPosition()) {
         list.setPosition(list.getPosition() - 1);
-        listRepository.saveAndFlush(list);
-      }
-    }
-  }
-
-  private void increasePositions(List<ListEntity> lists, Integer position) {
-    for (ListEntity list : lists) {
-      if (position < list.getPosition()) {
-        list.setPosition(list.getPosition() + 1);
-        listRepository.saveAndFlush(list);
       }
     }
   }

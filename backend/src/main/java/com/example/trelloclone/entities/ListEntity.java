@@ -1,5 +1,6 @@
 package com.example.trelloclone.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,9 +24,13 @@ public class ListEntity {
   @NotNull
   private Integer position;
 
-  @OneToMany(fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "list", orphanRemoval = true)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
+  @JsonIgnore
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private List<CardEntity> cards;
+
+  @ManyToOne
+  private BoardEntity board;
 }

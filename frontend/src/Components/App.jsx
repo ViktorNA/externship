@@ -1,13 +1,12 @@
 import { hot } from 'react-hot-loader/root';
 import React from "react";
-import ListBoard from './ListBoard/ListBoard.jsx';
-import './App.scss';
 import MainRouter from '../routes/MainRouter.jsx';
+import {StateProvider} from '../store/store.jsx';
+import './App.scss';
 
 const App = () => (
-  <div>
+  <StateProvider>
     <MainRouter/>
-     {/*<ListBoard boardId={'1'}/>*/}
-  </div>
+  </StateProvider>
 );
 export default hot(App);

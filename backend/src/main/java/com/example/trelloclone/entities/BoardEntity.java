@@ -12,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Data
+@Inheritance
+@DiscriminatorColumn
 public class BoardEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +22,11 @@ public class BoardEntity {
   @NotBlank(message = "Card name can not ne blank")
   private String name;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
-  @JsonIgnoreProperties({"hibernateLazyInitializer"})
+  @JsonIgnore
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private List<ListEntity> lists;
+
 }

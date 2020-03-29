@@ -16,19 +16,24 @@ public class ListController {
 
   @Autowired ListService listService;
 
-  @PostMapping
+  @PostMapping("")
   public ListEntity saveList(@RequestBody ListEntity listEntity, @RequestParam Long boardId) {
     return listService.saveList(listEntity, boardId);
   }
 
-  @PutMapping
+  @GetMapping("{boardId}")
+  public List<ListEntity> getListsOfBoard(@PathVariable Long boardId) {
+    return listService.getListsOfBoard(boardId);
+  }
+
+  @PutMapping("")
   public ListEntity updateList(@RequestBody ListEntity listEntity) {
     return listService.updateList(listEntity);
   }
 
-  @DeleteMapping
-  public void deleteList(@RequestParam Long boardId, Long listId) {
-    listService.deleteList(boardId, listId);
+  @DeleteMapping("")
+  public void deleteList(@RequestParam Long listId, @RequestParam Long boardId) {
+    listService.deleteListById(boardId, listId);
   }
 
   @PutMapping("removeFromTo")
@@ -39,14 +44,9 @@ public class ListController {
     listService.removeListFromTo(sourceBoardId, destinationBoardId, listId);
   }
 
-  @GetMapping
+  @GetMapping("")
   public List<ListEntity> getAllLists() {
     return listService.getAllLists();
-  }
-
-  @DeleteMapping("{id}")
-  public void deleteListById(@PathVariable Long id) {
-    listService.deleteListById(id);
   }
 
   @PutMapping("changePosition")

@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.*;
 public class CardController {
   @Autowired CardService cardService;
 
-  @PostMapping
+  @PostMapping("")
   public CardEntity createCard(@RequestBody CardEntity cardEntity, @RequestParam Long listId) {
     return cardService.createCard(cardEntity, listId);
   }
 
-  @PutMapping
+  @PutMapping("")
   public CardEntity updateCard(@RequestBody CardEntity cardEntity) {
     return cardService.updateCard(cardEntity);
   }
 
-  @DeleteMapping
+  @DeleteMapping("")
   public void deleteCard(@RequestParam Long listId, @RequestParam Long cardId) {
-    cardService.deleteCard(listId, cardId);
+    cardService.deleteCardById(listId, cardId);
   }
 
   @PutMapping("removeFromTo")
@@ -32,5 +32,13 @@ public class CardController {
       @RequestParam Long destinationListId,
       @RequestParam Long cardId) {
     cardService.removeCardFromTo(sourceListId, destinationListId, cardId);
+  }
+
+  @PutMapping("changePosition")
+  public void changePosition(
+          @RequestParam Integer sourcePosition,
+          @RequestParam Integer destinationPosition,
+          @RequestParam Long listId) {
+    cardService.changePosition(sourcePosition, destinationPosition, listId);
   }
 }

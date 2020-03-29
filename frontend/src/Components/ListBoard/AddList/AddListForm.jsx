@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
-import { v4 as uuid } from 'uuid';
 import boarStyles from '../ListBoard.scss';
 import styles from './AddListFrom.scss';
 import {Draggable} from 'react-beautiful-dnd';
-import axios from 'axios';
 import {addListToBoard} from '../../../utils/APIRequests.jsx';
 
 const AddListFrom = ({addList, id, index, boardId}) => {

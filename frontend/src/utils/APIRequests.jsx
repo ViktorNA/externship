@@ -40,3 +40,15 @@ export const changeListsPositions = (sourcePosition, destinationPosition, boardI
       callback(res.data);
     })
 };
+
+export const addBoardToUser = (newBoard, userId, callback) => {
+  axios.post(`${BASE_URL}/boards?userId=${userId}`, newBoard)
+    .then( (res) => {
+      callback(res.data);
+    })
+};
+
+export const registerNewUser = (newUser, callback) => {
+  axios.post(`${BASE_URL}/users`, newUser)
+    .then( (res) => callback(res.data))
+}

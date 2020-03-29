@@ -1,6 +1,7 @@
 package com.example.trelloclone.controllers;
 
 import com.example.trelloclone.entities.BoardEntity;
+import com.example.trelloclone.entities.TeamEntity;
 import com.example.trelloclone.entities.UserEntity;
 import com.example.trelloclone.services.BoardService;
 import com.example.trelloclone.services.UserService;
@@ -20,12 +21,12 @@ public class UserController {
     return userService.getUserById(id);
 }
 
-  @GetMapping
+  @GetMapping("")
   public List<UserEntity> getAllUsers() {
     return userService.getAllUsers();
   }
 
-  @PostMapping
+  @PostMapping("")
   public UserEntity createUser(@RequestBody UserEntity userEntity) {
     return userService.createUser(userEntity);
   }
@@ -33,5 +34,15 @@ public class UserController {
   @PostMapping("assignBoardToUser")
   public UserEntity assignBoardToUser(@RequestParam Long userId, @RequestParam Long boardId) {
     return userService.assignBoardToUser(userId, boardId);
+  }
+
+  @DeleteMapping("")
+  public void deleteUserById(@RequestParam Long userId) {
+    userService.deleteUserById(userId);
+  }
+
+  @GetMapping("teamsOfUser/{userId}")
+  public List<TeamEntity> getTeamsOfUser(@PathVariable Long userId) {
+    return userService.getTeamsOfUser(userId);
   }
 }

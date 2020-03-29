@@ -6,7 +6,7 @@ const BoardCard = ({name, id}) => {
   return(
     <div>
       <h5>{name}</h5>
-      <Link to={`${id}`}>Go to board</Link>
+      <Link to={`boards/${id}`}>Go to board</Link>
     </div>
   )
 };

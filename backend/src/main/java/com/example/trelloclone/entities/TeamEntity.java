@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.catalina.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,24 +13,31 @@ import java.util.List;
 
 @Entity
 @Data
-public class UserEntity {
+public class TeamEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank private String username;
+  @NotBlank private String name;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", orphanRemoval = true)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
   @JsonIgnore
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-  private List<UserBoardEntity> boards;
+  private List<TeamBoardEntity> boards;
 
-  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @ManyToMany(
+      mappedBy = "teams",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
   @JsonIgnore
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-  private List<TeamEntity> teams;
+  private List<UserEntity> users;
+
+  public void removeUser(UserEntity userEntity) {
+    users.remove(userEntity);
+    userEntity.getTeams().remove(this);
+  }
 }

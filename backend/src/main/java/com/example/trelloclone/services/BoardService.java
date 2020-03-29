@@ -1,12 +1,7 @@
 package com.example.trelloclone.services;
 
-import com.example.trelloclone.dao.BoardRepository;
-import com.example.trelloclone.dao.ListRepository;
-import com.example.trelloclone.dao.UserRepository;
-import com.example.trelloclone.entities.BoardEntity;
-import com.example.trelloclone.entities.CardEntity;
-import com.example.trelloclone.entities.ListEntity;
-import com.example.trelloclone.entities.UserEntity;
+import com.example.trelloclone.dao.*;
+import com.example.trelloclone.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +12,21 @@ public class BoardService {
   @Autowired BoardRepository boardRepository;
   @Autowired ListRepository listRepository;
   @Autowired UserRepository userRepository;
+  @Autowired UserBoardRepository userBoardRepository;
+  @Autowired TeamBoardRepository teamBoardRepository;
+  @Autowired TeamRepository teamRepository;
 
-  public BoardEntity createBoard(BoardEntity boardEntity, Long userId) {
-    BoardEntity board = boardRepository.saveAndFlush(boardEntity);
-    UserEntity userEntity = userRepository.getOne(userId);
-    userEntity.getBoards().add(board);
-    userRepository.saveAndFlush(userEntity);
-    return board;
+  public UserBoardEntity createUserBoard(UserBoardEntity boardEntity, Long userId) {
+    boardEntity.setUser(userRepository.getOne(userId));
+    return userBoardRepository.saveAndFlush(boardEntity);
   }
 
+  public TeamBoardEntity createTeamBoard(TeamBoardEntity boardEntity, Long userId) {
+    boardEntity.setTeam(teamRepository.getOne(userId));
+    return teamBoardRepository.saveAndFlush(boardEntity);
+  }
+
+  // TODO: repair
   public BoardEntity updateBoard(BoardEntity boardEntity) {
     List<ListEntity> lists = boardRepository.getOne(boardEntity.getId()).getLists();
     boardEntity.setLists(lists);
@@ -33,11 +34,7 @@ public class BoardService {
   }
 
   public void deleteBoard(Long userId, Long boardId) {
-    UserEntity userEntity = userRepository.getOne(userId);
-    BoardEntity boardEntity = boardRepository.getOne(boardId);
-    userEntity.getBoards().remove(boardEntity);
     boardRepository.deleteById(boardId);
-    userRepository.saveAndFlush(userEntity);
   }
 
   public List<BoardEntity> getAllBoards() {
@@ -55,7 +52,11 @@ public class BoardService {
     return boardRepository.saveAndFlush(boardEntity);
   }
 
-  public List<BoardEntity> getBoardsOfUser(Long userId) {
+  public List<UserBoardEntity> getBoardsOfUser(Long userId) {
     return userRepository.getOne(userId).getBoards();
+  }
+
+  public List<TeamBoardEntity> getBoardsOfTeam(Long teamId) {
+    return teamRepository.getOne(teamId).getBoards();
   }
 }

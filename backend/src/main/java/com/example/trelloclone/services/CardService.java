@@ -17,10 +17,8 @@ public class CardService {
   public CardEntity createCard(CardEntity cardEntity, Long listId) {
     ListEntity listEntity = listRepository.getOne(listId);
     cardEntity.setPosition(listEntity.getCards().size());
-    CardEntity card = cardRepository.saveAndFlush(cardEntity);
-    listEntity.getCards().add(card);
-    listRepository.saveAndFlush(listEntity);
-    return card;
+    cardEntity.setList(listEntity);
+    return cardRepository.saveAndFlush(cardEntity);
   }
 
   public CardEntity updateCard(CardEntity cardEntity) {
@@ -29,34 +27,53 @@ public class CardService {
     return null;
   }
 
-  public void deleteCard(Long listId, Long cardId) {
-    ListEntity listEntity = listRepository.getOne(listId);
-    CardEntity cardEntity = cardRepository.getOne(cardId);
-    Integer position = cardEntity.getPosition();
-    listEntity.getCards().remove(cardEntity);
-    reducePositions(listEntity.getCards(), position);
+  public void deleteCardById(Long cardId, long listId) {
+    Integer position = cardRepository.getOne(cardId).getPosition();
     cardRepository.deleteById(cardId);
-    listRepository.saveAndFlush(listEntity);
+    reducePositions(listRepository.getOne(listId).getCards(), position);
   }
 
   public void removeCardFromTo(Long sourceListId, Long destinationListId, Long cardId) {
     ListEntity sourceListEntity = listRepository.getOne(sourceListId);
     ListEntity destinationListEntity = listRepository.getOne(destinationListId);
     CardEntity cardEntity = cardRepository.getOne(cardId);
-    sourceListEntity.getCards().remove(cardEntity);
-    reducePositions(sourceListEntity.getCards(), cardEntity.getPosition());
+    int position = cardEntity.getPosition();
+    reducePositions(sourceListEntity.getCards(), position);
     cardEntity.setPosition(destinationListEntity.getCards().size());
-    destinationListEntity.getCards().add(cardEntity);
+    cardEntity.setList(destinationListEntity);
     listRepository.saveAndFlush(sourceListEntity);
-    listRepository.saveAndFlush(destinationListEntity);
     cardRepository.saveAndFlush(cardEntity);
+  }
+
+  public void changePosition(Integer sourcePosition, Integer destinationPosition, Long listId) {
+    ListEntity listEntity =  listRepository.getOne(listId);
+    List<CardEntity> cards = listEntity.getCards();
+    CardEntity destinationCard = null;
+    for (CardEntity card : cards) {
+      Integer position = card.getPosition();
+      if (position > sourcePosition && position <= destinationPosition) {
+        card.setPosition(position - 1);
+      }
+      if (position >= destinationPosition && position < sourcePosition) {
+        card.setPosition(position + 1);
+      }
+      if (position.equals(sourcePosition)) {
+        destinationCard = card;
+      }
+    }
+    if (destinationCard != null) destinationCard.setPosition(destinationPosition);
+    listEntity.setCards(cards);
+    listRepository.saveAndFlush(listEntity);
+  }
+
+  public List<CardEntity> getCardsOfList(Long listId) {
+    return listRepository.getOne(listId).getCards();
   }
 
   private void reducePositions(List<CardEntity> cards, Integer position) {
     for (CardEntity card : cards) {
       if (position < card.getPosition()) {
         card.setPosition(card.getPosition() - 1);
-        cardRepository.saveAndFlush(card);
       }
     }
   }

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import BoardsOfUser from '../Components/BoardsOfUser/BoardsOfUser.jsx';
 import ListBoard from '../Components/ListBoard/ListBoard.jsx';
+import LoginForm from '../Components/Authorization/LoginForm.jsx';
 
 const MainRouter = () => {
   return (
@@ -16,6 +17,9 @@ const MainRouter = () => {
         </Route>
         <Route path="/boards/:boardId" >
           <ListBoard />
+        </Route>
+        <Route expact path="/">
+          <LoginForm/>
         </Route>
       </Switch>
     </Router>
