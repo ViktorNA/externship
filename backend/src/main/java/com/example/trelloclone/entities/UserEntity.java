@@ -40,6 +40,7 @@ public class UserEntity {
 
   @NotBlank
   @Size(max = 100)
+  @JsonIgnore
   private String password;
 
   @ManyToMany(fetch = FetchType.LAZY)
@@ -58,15 +59,17 @@ public class UserEntity {
   @JsonIgnore
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private List<TeamEntity> teams;
-  
-   public UserEntity() {
 
-    }
+  public UserEntity() {}
 
   public UserEntity(String name, String username, String email, String password) {
     this.name = name;
     this.username = username;
     this.email = email;
     this.password = password;
+  }
+
+  public Boolean isBoardBelongsById(Long boardId) {
+    return boards.parallelStream().anyMatch(board -> board.getId().equals(boardId));
   }
 }

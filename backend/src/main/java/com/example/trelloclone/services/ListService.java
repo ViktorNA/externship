@@ -45,9 +45,11 @@ public class ListService {
   }
 
   public void deleteListById(Long boardId, Long listId) {
-    Integer position = listRepository.getOne(listId).getPosition();
+    BoardEntity boardEntity = boardRepository.getOne(boardId);
+    int position = listRepository.getOne(listId).getPosition();
     listRepository.deleteById(listId);
-    reducePositions(boardRepository.getOne(boardId).getLists(), position);
+    reducePositions(boardEntity.getLists(), position);
+    boardRepository.saveAndFlush(boardEntity);
   }
 
   public void changePosition(Integer sourcePosition, Integer destinationPosition, Long boardId) {

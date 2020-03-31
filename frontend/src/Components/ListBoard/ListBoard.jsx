@@ -4,7 +4,6 @@ import AddListFrom from './AddList/AddListForm.jsx';
 import List from './List/List.jsx';
 import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 import styles from './ListBoard.scss';
-import axios from 'axios';
 import {changeListsPositions, getBoardById} from '../../utils/APIRequests.jsx';
 
 const ListBoard = () => {

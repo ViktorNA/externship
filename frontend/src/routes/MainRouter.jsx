@@ -7,16 +7,20 @@ import {
 import BoardsOfUser from '../Components/BoardsOfUser/BoardsOfUser.jsx';
 import ListBoard from '../Components/ListBoard/ListBoard.jsx';
 import LoginForm from '../Components/Authorization/LoginForm.jsx';
+import SignupForm from '../Components/Authorization/SignupForm.jsx';
 
 const MainRouter = () => {
   return (
     <Router>
       <Switch>
         <Route exact path="/boards">
-          <BoardsOfUser userId={1}/>
+          <BoardsOfUser/>
         </Route>
-        <Route path="/boards/:boardId" >
+        <Route exact path="/boards/:boardId" >
           <ListBoard />
+        </Route>
+        <Route exact path="/signup" >
+          <SignupForm />
         </Route>
         <Route expact path="/">
           <LoginForm/>

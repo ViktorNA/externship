@@ -1,42 +1,49 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {Link} from 'react-router-dom';
-import axios from 'axios';
-import {store} from '../../store/store.jsx';
-import {registerNewUser} from '../../utils/APIRequests.jsx';
+import React, {useState} from 'react';
+import {useHistory} from 'react-router-dom';
+import { Button, Checkbox, Form } from 'semantic-ui-react'
+import {login} from '../../utils/APIRequests.jsx';
+import styles from './FormStyles.scss';
+import 'semantic-ui-css/semantic.min.css';
+import {setToken} from '../../utils/TokenUtils.jsx';
+import {MAIN_COLOR} from '../../utils/Constants.jsx';
+
 
 const LoginForm = () => {
-  const [users, setUsers] = useState([]);
-  const [newUserName, setNewUserName] = useState('');
-  const context = useContext(store);
-  useEffect( () => {
-    axios.get(`http://localhost:8080/api/users`)
-      .then((res) => {
-        setUsers(res.data)
-  });
-  }, []);
-
-  const addNewUser = (newUser) => {
-    setUsers([...users, newUser])
-    setNewUserName('');
+  const [usernameOrEmail, setUserNameOrEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const history = useHistory();
+  const loginCallback = (res) => {
+    setToken(res.data.accessToken);
+    history.push('/boards')
   };
-
-  const handleFormSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newUser = {
-      username: newUserName,
-    };
-    registerNewUser(newUser, addNewUser)
+    login({usernameOrEmail, password}, loginCallback);
   };
-  const handleOnLink = (userId) => {
-    context.dispatch({type: "SET_USER_ID", userId: userId})
-  };
+
   return(
-    <div>
-      <form onSubmit={handleFormSubmit}>
-        <input value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder={'Enter new user name'}/>
-        <button>Add user</button>
-      </form>
-      {users.map( (user) => <div key={user.id}><Link onClick={() => handleOnLink(user.id)}  to="boards">{user.username}</Link></div>)}
+    <div className={styles.Form}>
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>Username or email</label>
+          <input
+            placeholder={' Username or email'}
+            value={usernameOrEmail}
+            onChange={(e) => setUserNameOrEmail(e.target.value)}
+          />
+        </Form.Field>
+        <Form.Field >
+          <label>Password</label>
+          <input
+            type={'password'}
+            placeholder='Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Field>
+        <Button color={MAIN_COLOR} type={'submit'}>Login</Button>
+        <Button basic color={MAIN_COLOR} onClick={()=>history.push("/signup")}>Sign Up</Button>
+      </Form>
     </div>
   );
 };

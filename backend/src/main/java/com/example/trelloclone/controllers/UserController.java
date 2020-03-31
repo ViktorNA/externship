@@ -6,6 +6,7 @@ import com.example.trelloclone.entities.UserEntity;
 import com.example.trelloclone.services.BoardService;
 import com.example.trelloclone.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +16,11 @@ import java.util.List;
 @CrossOrigin
 public class UserController {
   @Autowired UserService userService;
-  
-  @GetMapping("{id}")
-  public UserEntity getUserById(@PathVariable Long id){
-    return userService.getUserById(id);
-}
+
+  @GetMapping("{username}")
+  public ResponseEntity<UserEntity> getUserById(@PathVariable String username) {
+    return userService.getUserByUsername(username);
+  }
 
   @GetMapping("")
   public List<UserEntity> getAllUsers() {
