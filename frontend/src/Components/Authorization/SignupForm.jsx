@@ -3,7 +3,8 @@ import styles from './FormStyles.scss';
 import {Button, Form} from 'semantic-ui-react';
 import {MAIN_COLOR} from '../../utils/Constants.jsx';
 import {signUp} from '../../utils/APIRequests.jsx';
-import {useHistory} from 'react-router-dom';
+import {Redirect, useHistory} from 'react-router-dom';
+import {getToken} from '../../utils/TokenUtils.jsx';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
@@ -21,6 +22,8 @@ const SignupForm = () => {
   };
   return(
     <div className={styles.Form}>
+      {/*TODO: redirect*/}
+      {getToken() && <Redirect to={{ pathname: "/boards"} }/>}
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>Username</label>

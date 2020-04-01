@@ -4,7 +4,10 @@ import com.example.trelloclone.dao.CardRepository;
 import com.example.trelloclone.dao.ListRepository;
 import com.example.trelloclone.entities.CardEntity;
 import com.example.trelloclone.entities.ListEntity;
+import org.apache.tomcat.util.threads.ResizableExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,13 @@ public class CardService {
   @Autowired CardRepository cardRepository;
   @Autowired ListRepository listRepository;
 
+  public ResponseEntity<List<CardEntity>> getCardsOfList(Long listId) {
+    boolean isListExist = listRepository.existsById(listId);
+    if (!isListExist) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    List<CardEntity> cards = listRepository.getOne(listId).getCards();
+    return new ResponseEntity<>(cards, HttpStatus.OK);
+  }
+
   public CardEntity createCard(CardEntity cardEntity, Long listId) {
     ListEntity listEntity = listRepository.getOne(listId);
     cardEntity.setPosition(listEntity.getCards().size());
@@ -22,8 +32,8 @@ public class CardService {
   }
 
   public CardEntity updateCard(CardEntity cardEntity) {
-    if (listRepository.existsById(cardEntity.getId()))
-      return cardRepository.saveAndFlush(cardEntity);
+    boolean isCardExist = listRepository.existsById(cardEntity.getId());
+    if (isCardExist) return cardRepository.saveAndFlush(cardEntity);
     return null;
   }
 
@@ -46,7 +56,7 @@ public class CardService {
   }
 
   public void changePosition(Integer sourcePosition, Integer destinationPosition, Long listId) {
-    ListEntity listEntity =  listRepository.getOne(listId);
+    ListEntity listEntity = listRepository.getOne(listId);
     List<CardEntity> cards = listEntity.getCards();
     CardEntity destinationCard = null;
     for (CardEntity card : cards) {
@@ -66,15 +76,14 @@ public class CardService {
     listRepository.saveAndFlush(listEntity);
   }
 
-  public List<CardEntity> getCardsOfList(Long listId) {
-    return listRepository.getOne(listId).getCards();
-  }
-
   private void reducePositions(List<CardEntity> cards, Integer position) {
-    for (CardEntity card : cards) {
-      if (position < card.getPosition()) {
-        card.setPosition(card.getPosition() - 1);
-      }
-    }
+    cards
+        .parallelStream()
+        .forEach(
+            card -> {
+              if (position < card.getPosition()) {
+                card.setPosition(card.getPosition() - 1);
+              }
+            });
   }
 }

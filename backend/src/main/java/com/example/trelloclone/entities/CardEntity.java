@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
+@Table(name = "cards")
 public class CardEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

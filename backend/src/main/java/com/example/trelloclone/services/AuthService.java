@@ -52,12 +52,14 @@ public class AuthService {
   }
 
   public ResponseEntity<ApiResponse> registerUser(SignUpRequest signUpRequest) {
-    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+    Boolean isUsernameTaken = userRepository.existsByUsername(signUpRequest.getUsername());
+    Boolean isEmailTaken = userRepository.existsByEmail(signUpRequest.getEmail());
+    if (isUsernameTaken) {
       return new ResponseEntity<>(
           new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
     }
 
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+    if (isEmailTaken) {
       return new ResponseEntity<>(
           new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
     }

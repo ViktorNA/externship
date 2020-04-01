@@ -53,7 +53,7 @@ public class ListService {
   }
 
   public void changePosition(Integer sourcePosition, Integer destinationPosition, Long boardId) {
-    BoardEntity boardEntity =  boardRepository.getOne(boardId);
+    BoardEntity boardEntity = boardRepository.getOne(boardId);
     List<ListEntity> lists = boardEntity.getLists();
     ListEntity destinationList = null;
     for (ListEntity list : lists) {
@@ -78,10 +78,13 @@ public class ListService {
   }
 
   private void reducePositions(List<ListEntity> lists, Integer position) {
-    for (ListEntity list : lists) {
-      if (position < list.getPosition()) {
-        list.setPosition(list.getPosition() - 1);
-      }
-    }
+    lists
+        .parallelStream()
+        .forEach(
+            list -> {
+              if (position < list.getPosition()) {
+                list.setPosition(list.getPosition() - 1);
+              }
+            });
   }
 }

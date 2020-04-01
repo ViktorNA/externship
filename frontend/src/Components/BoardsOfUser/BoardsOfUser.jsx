@@ -24,7 +24,6 @@ const BoardsOfUser = () => {
   }, []);
   return (
     <div>
-      {console.log(boards)}
       <form onSubmit={handleFormSubmit}>
         <input value={newBoardName} onChange={e => setNewBoardName(e.target.value)} placeholder={'Enter board name'}/>
         <button>Add board</button>

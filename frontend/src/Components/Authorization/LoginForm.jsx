@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import {Redirect, useHistory} from 'react-router-dom';
 import { Button, Checkbox, Form } from 'semantic-ui-react'
 import {login} from '../../utils/APIRequests.jsx';
 import styles from './FormStyles.scss';
-import 'semantic-ui-css/semantic.min.css';
-import {setToken} from '../../utils/TokenUtils.jsx';
+import {getToken, setToken} from '../../utils/TokenUtils.jsx';
 import {MAIN_COLOR} from '../../utils/Constants.jsx';
 
 
@@ -23,6 +22,8 @@ const LoginForm = () => {
 
   return(
     <div className={styles.Form}>
+      {/*TODO: redirect*/}
+      {getToken() && <Redirect to={{ pathname: "/boards"} }/>}
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>Username or email</label>

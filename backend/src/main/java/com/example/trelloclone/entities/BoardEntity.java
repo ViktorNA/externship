@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @Inheritance
 @DiscriminatorColumn
+@Table(name = "boards")
 public class BoardEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

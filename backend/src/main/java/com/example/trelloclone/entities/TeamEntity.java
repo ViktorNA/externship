@@ -13,12 +13,18 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "teams")
 public class TeamEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank private String name;
+
+  @ManyToOne
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  private UserEntity creator;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", orphanRemoval = true)
   @EqualsAndHashCode.Exclude
@@ -39,5 +45,9 @@ public class TeamEntity {
   public void removeUser(UserEntity userEntity) {
     users.remove(userEntity);
     userEntity.getTeams().remove(this);
+  }
+
+  public boolean isUserBelongsToTeamById(Long id) {
+    return users.parallelStream().anyMatch(userEntity -> userEntity.getId().equals(id));
   }
 }

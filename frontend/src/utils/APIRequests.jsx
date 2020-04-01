@@ -47,7 +47,7 @@ export const changeListsPositions = (sourcePosition, destinationPosition, boardI
   axios.put(
     `${BASE_URL}/lists/changePosition?sourcePosition=${sourcePosition}&destinationPosition=${destinationPosition}&boardId=${boardId}`,
     {},
-    config
+    config()
   )
     .then( (res) => {
       callback(res.data);

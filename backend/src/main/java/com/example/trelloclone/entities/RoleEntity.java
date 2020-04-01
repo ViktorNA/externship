@@ -1,11 +1,14 @@
 package com.example.trelloclone.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 
 @Entity
 @Data
+@NoArgsConstructor
+@Table(name = "roles")
 public class RoleEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,4 +18,8 @@ public class RoleEntity {
   @NaturalId
   @Column(length = 60)
   private RoleName name;
+
+  public RoleEntity(RoleName roleName) {
+    this.name = roleName;
+  }
 }

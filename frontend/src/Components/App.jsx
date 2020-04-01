@@ -3,6 +3,7 @@ import React from "react";
 import MainRouter from '../routes/MainRouter.jsx';
 import {StateProvider} from '../store/store.jsx';
 import './App.scss';
+import 'semantic-ui-css/semantic.min.css';
 
 const App = () => (
   <StateProvider>

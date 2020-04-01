@@ -2,8 +2,12 @@ package com.example.trelloclone.controllers;
 
 import com.example.trelloclone.entities.TeamEntity;
 import com.example.trelloclone.entities.UserEntity;
+import com.example.trelloclone.playloads.ApiResponse;
+import com.example.trelloclone.security.CurrentUser;
+import com.example.trelloclone.security.UserPrincipal;
 import com.example.trelloclone.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,37 +19,37 @@ public class TeamController {
   @Autowired TeamService teamService;
 
   @GetMapping("")
-  public List<TeamEntity> getAllTeams() {
-    return teamService.getAllTeams();
+  public List<TeamEntity> getTeamsOfUser(@CurrentUser UserPrincipal user) {
+    return teamService.getTeamsOfUser(user);
   }
 
   @PostMapping("")
-  public TeamEntity createTeam(@RequestBody TeamEntity teamEntity) {
-    return teamService.createTeam(teamEntity);
+  public TeamEntity createTeam(@CurrentUser UserPrincipal user, @RequestBody TeamEntity teamEntity) {
+    return teamService.createTeam(teamEntity, user);
   }
 
   @PutMapping("")
-  public TeamEntity updateTeam(@RequestBody TeamEntity teamEntity) {
+  public ResponseEntity<ApiResponse> updateTeam(@RequestBody TeamEntity teamEntity) {
     return teamService.updateTeam(teamEntity);
   }
 
   @DeleteMapping("")
-  public void deleteTeamById(@RequestParam Long teamId) {
-    teamService.deleteTeamById(teamId);
+  public ResponseEntity<ApiResponse> deleteTeamById(@RequestParam Long teamId) {
+    return teamService.deleteTeamById(teamId);
   }
 
   @PutMapping("addUserToTeam")
-  public void addUserToTeam(@RequestParam Long teamId, @RequestParam Long userId) {
-    teamService.addUserToTeam(teamId, userId);
+  public ResponseEntity<ApiResponse> addUserToTeam(@RequestParam Long teamId, @RequestParam Long userId) {
+    return teamService.addUserToTeam(teamId, userId);
   }
 
   @PutMapping("deleteUserFromTeam")
-  public void deleteUserFromTeam(@RequestParam Long teamId, @RequestParam Long userId) {
-    teamService.deleteUserFromTeam(teamId, userId);
+  public ResponseEntity<ApiResponse> deleteUserFromTeam(@RequestParam Long teamId, @RequestParam Long userId) {
+    return teamService.deleteUserFromTeam(teamId, userId);
   }
 
   @GetMapping("usersOfTeam/{teamId}")
-  public List<UserEntity> getUsersOfTeam(@PathVariable Long teamId) {
+  public ResponseEntity<List<UserEntity>> getUsersOfTeam(@PathVariable Long teamId) {
     return teamService.getUsersOfTeam(teamId);
   }
 }

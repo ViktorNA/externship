@@ -8,23 +8,41 @@ import BoardsOfUser from '../Components/BoardsOfUser/BoardsOfUser.jsx';
 import ListBoard from '../Components/ListBoard/ListBoard.jsx';
 import LoginForm from '../Components/Authorization/LoginForm.jsx';
 import SignupForm from '../Components/Authorization/SignupForm.jsx';
+import PageNotFound from '../Components/Error/PageNotFound.jsx';
+import PrivateRoute from './PrivateRoute.jsx';
+import Header from '../Components/Header/Header.jsx';
+import TeamsOfUser from '../Components/Team/TeamsOfUser.jsx';
 
 const MainRouter = () => {
   return (
     <Router>
+      <Header/>
       <Switch>
-        <Route exact path="/boards">
+
+        <PrivateRoute exact path="/boards">
           <BoardsOfUser/>
-        </Route>
-        <Route exact path="/boards/:boardId" >
+        </PrivateRoute>
+
+        <PrivateRoute exact path="/boards/:boardId" >
           <ListBoard />
-        </Route>
+        </PrivateRoute>
+
         <Route exact path="/signup" >
           <SignupForm />
         </Route>
-        <Route expact path="/">
+
+        <PrivateRoute exact path="/teams">
+          <TeamsOfUser/>
+        </PrivateRoute>
+
+        <Route exact path="/" >
           <LoginForm/>
         </Route>
+
+        <Route>
+          <PageNotFound/>
+        </Route>
+
       </Switch>
     </Router>
   )
