@@ -10,6 +10,7 @@ import org.apache.catalina.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -21,10 +22,7 @@ public class TeamEntity {
 
   @NotBlank private String name;
 
-  @ManyToOne
-  @EqualsAndHashCode.Exclude
-  @ToString.Exclude
-  private UserEntity creator;
+  @ManyToOne @EqualsAndHashCode.Exclude @ToString.Exclude private UserEntity creator;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", orphanRemoval = true)
   @EqualsAndHashCode.Exclude
@@ -49,5 +47,17 @@ public class TeamEntity {
 
   public boolean isUserBelongsToTeamById(Long id) {
     return users.parallelStream().anyMatch(userEntity -> userEntity.getId().equals(id));
+  }
+
+  public boolean isBoardBelongsToTeamById(Long id) {
+    return boards.parallelStream().anyMatch(boardEntity -> boardEntity.getId().equals(id));
+  }
+
+  public void deleteBoardFromTeamById(Long id) {
+    this.setBoards(
+        boards
+            .parallelStream()
+            .filter(boardEntity -> !boardEntity.getId().equals(id))
+            .collect(Collectors.toList()));
   }
 }

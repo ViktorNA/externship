@@ -1,7 +1,7 @@
 import regeneratorRuntime from "regenerator-runtime";
 import axios from 'axios';
 import {BASE_URL} from './Constants.jsx';
-import {getToken} from './TokenUtils.jsx';
+import {getToken} from './LocalStorageUtils.jsx';
 
 const config = () => {
   return {

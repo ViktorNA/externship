@@ -15,3 +15,31 @@ export const createTeam = (newTeam, callback) => {
       callback(res.data);
     })
 };
+
+export const getBoardsOfTeam = (teamId, callback) => {
+  axios.get(`${BASE_URL}/teams/boardsOfTeam/${teamId}`, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};
+
+export const createBoard = (board, teamId, callback) => {
+  axios.post(`${BASE_URL}/teams/createBoard?teamId=${teamId}`, board, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};
+
+export const getUsersOfTeam = (teamId, callback) => {
+  axios.get(`${BASE_URL}/teams/usersOfTeam/${teamId}`, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};
+
+export const addUserToTeam = (teamId, userId, callback) => {
+  axios.put(`${BASE_URL}/teams/addUserToTeam?teamId=${teamId}&userId=${userId}`, {}, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};

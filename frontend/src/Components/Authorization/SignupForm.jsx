@@ -4,13 +4,14 @@ import {Button, Form} from 'semantic-ui-react';
 import {MAIN_COLOR} from '../../utils/Constants.jsx';
 import {signUp} from '../../utils/APIRequests.jsx';
 import {Redirect, useHistory} from 'react-router-dom';
-import {getToken} from '../../utils/TokenUtils.jsx';
+import {getToken} from '../../utils/LocalStorageUtils.jsx';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
   const signupCallback = (res) => {
@@ -18,6 +19,7 @@ const SignupForm = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     signUp({name, username, email, password}, signupCallback);
   };
   return(
@@ -58,7 +60,8 @@ const SignupForm = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Field>
-        <Button color={MAIN_COLOR} type={'submit'}>Sign Up</Button>
+        <Button color={MAIN_COLOR} type={'submit'} loading={isLoading}>Sign Up</Button>
+        <Button basic color={MAIN_COLOR} onClick={()=>history.push("/login")} disabled={isLoading}>Login</Button>
       </Form>
     </div>
   )

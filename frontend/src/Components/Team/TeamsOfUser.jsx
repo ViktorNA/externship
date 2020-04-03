@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {createTeam, getTeamsOfUser} from '../../utils/APIRequests/TeamRequest.jsx';
+import TeamCard from './TeamCard/TeamCard.jsx';
 
 const TeamsOfUser = () => {
   const [teamName, setTeamName] = useState('');
@@ -28,7 +29,7 @@ const TeamsOfUser = () => {
       </form>
       <h5>Your teams:</h5>
       <div>
-        {teams.map( (team) => <div key={team.id}> {team.name}</div>)}
+        {teams.map( (team) => <TeamCard key={team.id} team={team}/>)}
       </div>
     </div>
   )

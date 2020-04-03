@@ -20,7 +20,7 @@ public class BoardController {
   @Autowired BoardService boardService;
 
   @GetMapping("")
-  public List<UserBoardEntity> getAllBoards(@CurrentUser UserPrincipal user) {
+  public List<UserBoardEntity> getAllBoardsOfUser(@CurrentUser UserPrincipal user) {
     return boardService.getBoardsOfUser(user.getId());
   }
 
@@ -37,11 +37,6 @@ public class BoardController {
   }
 
   // TODO: All below
-  @PostMapping("teamBoard")
-  public BoardEntity createBoard(
-      @RequestBody TeamBoardEntity boardEntity, @RequestParam Long userId) {
-    return boardService.createTeamBoard(boardEntity, userId);
-  }
 
   @PutMapping("")
   public BoardEntity updateBoard(@RequestBody BoardEntity boardEntity) {
@@ -51,16 +46,6 @@ public class BoardController {
   @PostMapping("assignListToBoard")
   public BoardEntity assignListToBoard(@RequestParam Long boardId, @RequestParam Long listId) {
     return boardService.assignListToBoard(boardId, listId);
-  }
-
-  //  @GetMapping("boardsOfUser/{id}")
-  //  public List<UserBoardEntity> getBoardsOfUser(@PathVariable Long id) {
-  //    return boardService.getBoardsOfUser(id);
-  //  }
-
-  @GetMapping("boardsOfTeam/{id}")
-  public List<TeamBoardEntity> getBoardsOfTeam(@PathVariable Long id) {
-    return boardService.getBoardsOfTeam(id);
   }
 
   @GetMapping("/{id}")

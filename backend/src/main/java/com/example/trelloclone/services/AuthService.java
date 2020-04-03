@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -39,6 +40,7 @@ public class AuthService {
   @Autowired JwtTokenProvider tokenProvider;
 
   public ResponseEntity<JwtAuthenticationResponse> authenticateUser(LoginRequest loginRequest) {
+    String usernameOrEmail = loginRequest.getUsernameOrEmail();
 
     Authentication authentication =
         authenticationManager.authenticate(
@@ -47,8 +49,10 @@ public class AuthService {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
+    Optional<UserEntity> user =
+        userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     String jwt = tokenProvider.generateToken(authentication);
-    return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, user.get()));
   }
 
   public ResponseEntity<ApiResponse> registerUser(SignUpRequest signUpRequest) {

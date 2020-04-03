@@ -1,4 +1,4 @@
-import {getToken} from '../TokenUtils.jsx';
+import {getToken} from '../LocalStorageUtils.jsx';
 
 export const config = () => {
   return {
