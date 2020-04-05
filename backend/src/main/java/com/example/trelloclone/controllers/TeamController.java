@@ -37,10 +37,10 @@ public class TeamController {
     return teamService.createTeam(teamEntity, user);
   }
 
-  @PutMapping("rename")
+  @PutMapping("update")
   public ResponseEntity<ApiResponse> renameTeam(
-      @CurrentUser UserPrincipal user, @RequestBody TeamEntity teamEntity) {
-    return teamService.renameTeam(teamEntity.getId(), teamEntity.getName(), user);
+      @CurrentUser UserPrincipal user, @RequestBody TeamEntity teamEntity,@RequestParam Long teamId) {
+    return teamService.updateTeam(teamId, teamEntity, user);
   }
 
   @DeleteMapping("")

@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -72,5 +73,15 @@ public class UserEntity {
 
   public Boolean isBoardBelongsById(Long boardId) {
     return boards.parallelStream().anyMatch(board -> board.getId().equals(boardId));
+  }
+
+  public void deleteBoardById(Long boardId) {
+    List<UserBoardEntity> newBoards =
+        boards
+            .parallelStream()
+            .filter(board -> !board.getId().equals(boardId))
+            .collect(Collectors.toList());
+    boards.clear();
+    boards.addAll(newBoards);
   }
 }

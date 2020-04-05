@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {createTeam, getTeamsOfUser} from '../../utils/APIRequests/TeamRequest.jsx';
 import TeamCard from './TeamCard/TeamCard.jsx';
+import styles from './TeamsOfUser.scss';
 
 const TeamsOfUser = () => {
   const [teamName, setTeamName] = useState('');
@@ -28,7 +29,7 @@ const TeamsOfUser = () => {
         <button type={'submit'}>Create team</button>
       </form>
       <h5>Your teams:</h5>
-      <div>
+      <div className={styles.teamListContainer}>
         {teams.map( (team) => <TeamCard key={team.id} team={team}/>)}
       </div>
     </div>

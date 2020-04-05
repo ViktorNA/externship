@@ -1,7 +1,6 @@
 package com.example.trelloclone.controllers;
 
 import com.example.trelloclone.entities.BoardEntity;
-import com.example.trelloclone.entities.TeamBoardEntity;
 import com.example.trelloclone.entities.UserBoardEntity;
 import com.example.trelloclone.playloads.ApiResponse;
 import com.example.trelloclone.security.CurrentUser;
@@ -36,6 +35,16 @@ public class BoardController {
     return boardService.deleteBoard(user.getId(), boardId);
   }
 
+  @PutMapping("rename")
+  public ResponseEntity<ApiResponse> renameBoard(@RequestParam Long boardId, @RequestBody BoardEntity board, @CurrentUser UserPrincipal user) {
+    return boardService.renameBoard(boardId, board.getName(), user);
+  }
+
+  @GetMapping("/{boardId}")
+  public ResponseEntity<BoardEntity> getBoardById(@PathVariable Long boardId, @CurrentUser UserPrincipal user) {
+    return boardService.getBoardById(boardId, user);
+  }
+
   // TODO: All below
 
   @PutMapping("")
@@ -46,10 +55,5 @@ public class BoardController {
   @PostMapping("assignListToBoard")
   public BoardEntity assignListToBoard(@RequestParam Long boardId, @RequestParam Long listId) {
     return boardService.assignListToBoard(boardId, listId);
-  }
-
-  @GetMapping("/{id}")
-  public BoardEntity getBoardById(@PathVariable Long id) {
-    return boardService.getBoardById(id);
   }
 }

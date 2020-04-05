@@ -63,7 +63,7 @@ public class TeamService {
 
   public ResponseEntity<TeamEntity> createTeam(TeamEntity teamEntity, UserPrincipal user) {
     boolean isUserExist = userRepository.existsById(user.getId());
-    if (isUserExist) throw new BadRequestException("User is not exist");
+    if (!isUserExist) throw new BadRequestException("User is not exist");
     UserEntity creator = userRepository.getOne(user.getId());
     teamEntity.setCreator(creator);
     teamEntity.setUsers(new ArrayList<>());
@@ -114,12 +114,14 @@ public class TeamService {
     return new ResponseEntity<>(new ApiResponse(true, "Deleted successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<ApiResponse> renameTeam(Long teamId, String newName, UserPrincipal user) {
+  public ResponseEntity<ApiResponse> updateTeam(Long teamId, TeamEntity newTeam, UserPrincipal user) {
     validateTeamAndUser(teamId, user.getId());
     TeamEntity teamEntity = teamRepository.getOne(teamId);
     boolean isUserCreatorOfTeam = teamId.equals(user.getId());
     if (isUserCreatorOfTeam) throw new BadRequestException("Delete team can only creator");
-    teamEntity.setName(newName);
+    teamEntity.setName(newTeam.getName());
+    teamEntity.setDescription(newTeam.getDescription());
+    teamRepository.saveAndFlush(teamEntity);
     return new ResponseEntity<>(new ApiResponse(true, "Renamed successfully"), HttpStatus.OK);
   }
 

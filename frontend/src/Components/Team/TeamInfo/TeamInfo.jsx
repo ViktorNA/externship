@@ -2,12 +2,14 @@ import React, {useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {createBoard, getBoardsOfTeam, getUsersOfTeam} from '../../../utils/APIRequests/TeamRequest.jsx';
 import AddUser from './AddUser.jsx';
+import BoardList from '../../BoardList/BoardList.jsx';
+import {deleteBoard} from '../../../utils/APIRequests/BoardRequests.jsx';
 
 const TeamInfo = () => {
   const {teamId} = useParams();
   const [boards, setBoards] = useState([]);
-  const [newBoardName, setNewBoardName] = useState('');
   const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const getBoardsCallback = (data)=> {
     setBoards(data);
   };
@@ -18,31 +20,31 @@ const TeamInfo = () => {
     getBoardsOfTeam(teamId, getBoardsCallback);
     getUsersOfTeam(teamId, getUsersCallback);
   }, []);
-  const handleAddBoard = (e) => {
-    e.preventDefault();
-    createBoard({name: newBoardName}, teamId, addBoardCallback);
+  const addBoard = (newBoard) => {
+    setIsLoading(true);
+    createBoard(newBoard, teamId, addBoardCallback);
   };
   const addBoardCallback = (data) => {
     setBoards([...boards, data]);
-    setNewBoardName('');
+    setIsLoading(false);
+  };
+  const deleteBoardHandler = (boardId) => {
+    deleteBoard(boardId, ()=>{});
+    setBoards(boards.filter( board => board.id !== boardId));
   };
   return (
     <div>
       <h5>Boards of team:</h5>
-      <form onSubmit={handleAddBoard}>
-        <input value={newBoardName} onChange={(e) => setNewBoardName(e.target.value)}/>
-        <button type={'submit'}>Add board</button>
-      </form>
-      <div>
-        {boards.map( board => <div key={board.id}><Link to={`/boards/${board.id}`} >{board.name}</Link></div>)}
-      </div>
+      <BoardList
+        boards={boards}
+        deleteBoardHandler={deleteBoardHandler}
+        addNewBoard={addBoard}
+        isLoading={isLoading}
+        />
       <h5>Users of team:</h5>
       <div>
-        {users.map( user => <div key={user.id}><Link to={`/users/${user.username}`} >{user.username}</Link></div>)}
+        {users.map( (user, index) => <span key={user.id}>{index ? ', ' : ''}<Link to={`/users/${user.username}`} >{user.username}</Link></span>)}
       </div>
-      {/*TODO:*/}
-      <h5>Add user</h5>
-      <AddUser members={users} teamId={teamId}/>
     </div>
   )
 };

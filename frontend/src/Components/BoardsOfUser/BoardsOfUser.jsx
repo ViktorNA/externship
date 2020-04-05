@@ -1,41 +1,43 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {addBoardToUser, getBoardsOfUser} from '../../utils/APIRequests.jsx';
-import BoardCard from './BoardCard/BoardCard.jsx';
 import {store} from '../../store/store.jsx'
+import {deleteBoard} from '../../utils/APIRequests/BoardRequests.jsx';
+import BoardList from '../BoardList/BoardList.jsx';
 
 const BoardsOfUser = () => {
   const [boards, setBoards] = useState([]);
-  const [newBoardName, setNewBoardName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const context = useContext(store);
   const {userId} = context.state;
-  const addNewBoard = (newBoard) => {
+
+  const addNewBoardCallback = (newBoard) => {
     setBoards([...boards, newBoard]);
-    setNewBoardName('');
+    setIsLoading(false);
   };
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newBoard = {
-      name: newBoardName,
-    };
-    addBoardToUser(newBoard, userId, addNewBoard)
+
+  const addNewBoard = (newBoard) => {
+    setIsLoading(true);
+    addBoardToUser(newBoard, userId, addNewBoardCallback)
+  };
+
+  const deleteBoardCallback = (res) => {
+    console.log(res);
+  };
+
+  const deleteBoardHandler = (boardId) => {
+    deleteBoard(boardId, deleteBoardCallback);
+    setBoards(boards.filter( board => board.id !== boardId));
   };
   useEffect( () => {
     getBoardsOfUser(setBoards);
   }, []);
   return (
-    <div>
-      <form onSubmit={handleFormSubmit}>
-        <input value={newBoardName} onChange={e => setNewBoardName(e.target.value)} placeholder={'Enter board name'}/>
-        <button>Add board</button>
-      </form>
-      <div>
-        {boards.map( (board) => <BoardCard
-          key={board.id}
-          name={board.name}
-          id={board.id}
-        />)}
-      </div>
-    </div>
+    <BoardList
+      boards={boards}
+      deleteBoardHandler={deleteBoardHandler}
+      addNewBoard={addNewBoard}
+      isLoading={isLoading}
+    />
   )
 };
 

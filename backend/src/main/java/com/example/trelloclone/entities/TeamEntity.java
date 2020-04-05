@@ -22,6 +22,8 @@ public class TeamEntity {
 
   @NotBlank private String name;
 
+  private String description;
+
   @ManyToOne @EqualsAndHashCode.Exclude @ToString.Exclude private UserEntity creator;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "team", orphanRemoval = true)

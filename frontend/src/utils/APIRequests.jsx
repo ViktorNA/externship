@@ -61,11 +61,6 @@ export const addBoardToUser = (newBoard, userId, callback) => {
     })
 };
 
-export const registerNewUser = (newUser, callback) => {
-  axios.post(`${BASE_URL}/auth/signup`, newUser)
-    .then( (res) => callback(res.data))
-};
-
 export const login = (user, callback) => {
   axios.post(`${BASE_URL}/auth/signin`, user)
     .then(res => callback(res));
