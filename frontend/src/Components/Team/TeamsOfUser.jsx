@@ -1,11 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {createTeam, getTeamsOfUser} from '../../utils/APIRequests/TeamRequest.jsx';
+import React, {useState, useEffect, useContext} from 'react';
+import {createTeam, deleteTeam, getTeamsOfUser} from '../../utils/APIRequests/TeamRequest.jsx';
 import TeamCard from './TeamCard/TeamCard.jsx';
+import {useStore} from '../../store/store.jsx';
 import styles from './TeamsOfUser.scss';
 
 const TeamsOfUser = () => {
   const [teamName, setTeamName] = useState('');
   const [teams, setTeams] = useState([]);
+  const [state, dispatch] = useStore();
 
   const createTeamCallback = (newTeam) => {
     setTeams([...teams, newTeam]);
@@ -15,9 +17,17 @@ const TeamsOfUser = () => {
     e.preventDefault();
     createTeam({name: teamName}, createTeamCallback);
   };
+  const handleDeleteTeam = (teamId) => {
+    deleteTeam(teamId, () => {});
+    setTeams(teams.filter( (team) => team.id !== teamId));
+  };
   useEffect( () => {
+    dispatch({type: 'SET_USER_ID', userId: 2});
     getTeamsOfUser(setTeams);
   }, []);
+  useEffect( () => {
+    dispatch({type: 'SAVE_TEAMS', teams: teams, setTeams});
+  }, [teams]);
   return (
     <div>
       <form onSubmit={handleCreateTeam}>
@@ -30,7 +40,7 @@ const TeamsOfUser = () => {
       </form>
       <h5>Your teams:</h5>
       <div className={styles.teamListContainer}>
-        {teams.map( (team) => <TeamCard key={team.id} team={team}/>)}
+        {teams.map( (team) => <TeamCard key={team.id} team={team} handleDeleteTeam={handleDeleteTeam}/>)}
       </div>
     </div>
   )

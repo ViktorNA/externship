@@ -61,7 +61,7 @@ public class TeamService {
     return new ResponseEntity<>(boardsOfTeam, HttpStatus.OK);
   }
 
-  public ResponseEntity<TeamEntity> createTeam(TeamEntity teamEntity, UserPrincipal user) {
+  public ResponseEntity<TeamResponse> createTeam(TeamEntity teamEntity, UserPrincipal user) {
     boolean isUserExist = userRepository.existsById(user.getId());
     if (!isUserExist) throw new BadRequestException("User is not exist");
     UserEntity creator = userRepository.getOne(user.getId());
@@ -69,8 +69,9 @@ public class TeamService {
     teamEntity.setUsers(new ArrayList<>());
     teamEntity.getUsers().add(creator);
     creator.getTeams().add(teamEntity);
+    TeamEntity team = teamRepository.saveAndFlush(teamEntity);
     userRepository.saveAndFlush(creator);
-    return new ResponseEntity<>(teamRepository.saveAndFlush(teamEntity), HttpStatus.CREATED);
+    return new ResponseEntity<>(new TeamResponse(team), HttpStatus.CREATED);
   }
 
   public ResponseEntity<ApiResponse> addUserToTeam(Long teamId, Long userId) {
@@ -109,8 +110,10 @@ public class TeamService {
     boolean isUserCreatorOfTeam = teamId.equals(user.getId());
     if (isUserCreatorOfTeam) throw new BadRequestException("Delete team can only creator");
     List<UserEntity> usersOfTeam = teamEntity.getUsers();
-    usersOfTeam.parallelStream().forEach(teamEntity::removeUser);
-    teamRepository.delete(teamEntity);
+    usersOfTeam.parallelStream().forEach(userEntity -> {
+      userEntity.deleteTeamById(teamId);
+      userRepository.saveAndFlush(userEntity);
+    });
     return new ResponseEntity<>(new ApiResponse(true, "Deleted successfully"), HttpStatus.OK);
   }
 
@@ -118,7 +121,7 @@ public class TeamService {
     validateTeamAndUser(teamId, user.getId());
     TeamEntity teamEntity = teamRepository.getOne(teamId);
     boolean isUserCreatorOfTeam = teamId.equals(user.getId());
-    if (isUserCreatorOfTeam) throw new BadRequestException("Delete team can only creator");
+    if (isUserCreatorOfTeam) throw new BadRequestException("Update team can only creator");
     teamEntity.setName(newTeam.getName());
     teamEntity.setDescription(newTeam.getDescription());
     teamRepository.saveAndFlush(teamEntity);

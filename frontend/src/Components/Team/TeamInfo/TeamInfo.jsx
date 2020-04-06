@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {createBoard, getBoardsOfTeam, getUsersOfTeam} from '../../../utils/APIRequests/TeamRequest.jsx';
-import AddUser from './AddUser.jsx';
 import BoardList from '../../BoardList/BoardList.jsx';
 import {deleteBoard} from '../../../utils/APIRequests/BoardRequests.jsx';
+import AddUser from './AddUser.jsx';
 
 const TeamInfo = () => {
   const {teamId} = useParams();
@@ -45,6 +45,7 @@ const TeamInfo = () => {
       <div>
         {users.map( (user, index) => <span key={user.id}>{index ? ', ' : ''}<Link to={`/users/${user.username}`} >{user.username}</Link></span>)}
       </div>
+      <AddUser members={users} teamId={teamId}/>
     </div>
   )
 };

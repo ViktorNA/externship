@@ -43,3 +43,17 @@ export const addUserToTeam = (teamId, userId, callback) => {
       callback(res.data);
     })
 };
+
+export const deleteTeam = (teamId, callback) => {
+  axios.delete(`${BASE_URL}/teams?teamId=${teamId}`, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};
+
+export const updateTeam = (teamId, newTeam, callback) => {
+  axios.put(`${BASE_URL}/teams/update?teamId=${teamId}`, newTeam, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};

@@ -55,7 +55,7 @@ public class UserEntity {
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   private List<UserBoardEntity> boards;
 
-  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @ManyToMany
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
   @JsonIgnore
@@ -83,5 +83,15 @@ public class UserEntity {
             .collect(Collectors.toList());
     boards.clear();
     boards.addAll(newBoards);
+  }
+
+  public void deleteTeamById(Long teamId) {
+    List<TeamEntity> newTeams =
+        teams
+            .parallelStream()
+            .filter(team -> !team.getId().equals(teamId))
+            .collect(Collectors.toList());
+    teams.clear();
+    teams.addAll(newTeams);
   }
 }

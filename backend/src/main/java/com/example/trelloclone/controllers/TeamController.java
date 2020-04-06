@@ -32,7 +32,7 @@ public class TeamController {
   }
 
   @PostMapping("")
-  public ResponseEntity<TeamEntity> createTeam(
+  public ResponseEntity<TeamResponse> createTeam(
       @CurrentUser UserPrincipal user, @RequestBody TeamEntity teamEntity) {
     return teamService.createTeam(teamEntity, user);
   }

@@ -4,6 +4,7 @@ import {Icon, Card, Input} from 'semantic-ui-react';
 import classNames from 'classnames';
 import appStyles from '../../App.scss';
 import styles from './BoardCard.scss';
+import iconStyles from '../../Icons.scss';
 
 const BoardCard = ({board, deleteBoardHandler}) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,14 +27,14 @@ const BoardCard = ({board, deleteBoardHandler}) => {
         <Card.Content>
           <Card.Header>
             {board.name}
-            <div className={styles.iconBox}>
+            <div className={iconStyles.iconBox}>
               <Icon
-                className={classNames(styles.Icon, styles.deleteIcon)}
+                className={classNames(iconStyles.Icon, iconStyles.deleteIcon)}
                 onClick={deleteOnClick}
                 name='delete'
               />
               <Icon
-                className={classNames(styles.Icon, styles.editIcon)}
+                className={classNames(iconStyles.Icon, iconStyles.editIcon)}
                 name='pencil'
                 onClick={toggleEditing}
               />
@@ -55,11 +56,11 @@ const BoardCard = ({board, deleteBoardHandler}) => {
                   transparent
                   value={boardName}
                   onChange={ e => setBoardName(e.target.value)}
-                  placeholder='Add new board'/>
+                  placeholder='Enter new name'/>
               </div>
-              <div className={styles.iconBox}>
-                <Icon className={styles.deleteIcon} name="close" onClick={toggleEditing} link/>
-                <Icon className={styles.checkIcon} name="check" link/>
+              <div className={iconStyles.iconBox}>
+                <Icon className={iconStyles.deleteIcon} name="close" onClick={toggleEditing} link/>
+                <Icon className={iconStyles.checkIcon} name="check" link/>
               </div>
 
             </div>

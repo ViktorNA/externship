@@ -1,4 +1,4 @@
-import React, {createContext, useReducer} from 'react';
+import React, {createContext, useReducer, useContext} from 'react';
 
 const initialState = {userId: 1};
 const store = createContext(initialState);
@@ -7,9 +7,12 @@ const { Provider } = store;
 const StateProvider = ( { children } ) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch(action.type) {
-      case 'SET_USER_ID':
-        const newState = { ...state, userId: action.userId };
-        return newState;
+      case 'SET_USER_ID':{
+        return { ...state, userId: action.userId };
+      }
+      case 'SAVE_TEAMS':{
+        return { ...state, teams: action.teams, setTeams: action.setTeams };
+      }
       default:
         throw new Error();
     }
@@ -18,4 +21,9 @@ const StateProvider = ( { children } ) => {
   return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };
 
-export { store, StateProvider }
+const useStore = () => {
+  const {state, dispatch} = useContext(store);
+  return [state, dispatch];
+};
+
+export { store, StateProvider, useStore };

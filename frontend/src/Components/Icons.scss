@@ -1,0 +1,23 @@
+.Icon {
+  cursor: pointer;
+  transition: all 0.1s;
+  z-index: 99;
+}
+
+.iconBox {
+  position: absolute;
+  right: 0;
+  display: inline;
+}
+
+.deleteIcon:hover {
+  color: rgba(255, 0, 0, 0.7);
+}
+
+.editIcon:hover {
+  color: rgba(0, 0, 255, 0.7);
+}
+
+.checkIcon:hover {
+  color: rgba(0, 255, 0, 0.7);
+}
