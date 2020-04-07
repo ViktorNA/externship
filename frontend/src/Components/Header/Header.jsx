@@ -1,8 +1,9 @@
 import React from 'react'
-import { Menu, Dropdown } from 'semantic-ui-react'
+import {Menu, Dropdown, Form} from 'semantic-ui-react'
 import {Link, useHistory, useLocation} from 'react-router-dom';
 import {getSavedUserFromLocalStorage, getToken} from '../../utils/LocalStorageUtils.jsx';
 import styles from './Header.scss';
+import {NotificationContainer} from 'react-notifications';
 
 
 const Header = () => {
@@ -78,8 +79,8 @@ const Header = () => {
   };
   return (
     <div className={styles.Header}>
+      <NotificationContainer/>
       <Menu pointing secondary>
-
         <Link to={'/'} className={styles.menuItem}>
           <Menu.Item
             name='home'

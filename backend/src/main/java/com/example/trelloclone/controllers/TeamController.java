@@ -51,14 +51,14 @@ public class TeamController {
 
   @PutMapping("addUserToTeam")
   public ResponseEntity<ApiResponse> addUserToTeam(
-      @RequestParam Long teamId, @RequestParam Long userId) {
-    return teamService.addUserToTeam(teamId, userId);
+      @RequestParam Long teamId, @RequestParam Long userId, @CurrentUser UserPrincipal user) {
+    return teamService.addUserToTeam(teamId, userId, user);
   }
 
   @PutMapping("deleteUserFromTeam")
   public ResponseEntity<ApiResponse> deleteUserFromTeam(
-      @RequestParam Long teamId, @RequestParam Long userId) {
-    return teamService.deleteUserFromTeam(teamId, userId);
+      @RequestParam Long teamId, @RequestParam Long userId, @CurrentUser UserPrincipal user) {
+    return teamService.deleteUserFromTeam(teamId, userId, user);
   }
 
   @GetMapping("usersOfTeam/{teamId}")

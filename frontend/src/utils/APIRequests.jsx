@@ -54,19 +54,9 @@ export const changeListsPositions = (sourcePosition, destinationPosition, boardI
     })
 };
 
-export const addBoardToUser = (newBoard, userId, callback) => {
-  axios.post(`${BASE_URL}/boards?userId=${userId}`, newBoard, config())
+export const addBoardToUser = (newBoard, callback) => {
+  axios.post(`${BASE_URL}/boards`, newBoard, config())
     .then( (res) => {
       callback(res.data);
     })
-};
-
-export const login = (user, callback) => {
-  axios.post(`${BASE_URL}/auth/signin`, user)
-    .then(res => callback(res));
-};
-
-export const signUp = (newUser, callback) => {
-  axios.post(`${BASE_URL}/auth/signup`, newUser)
-    .then(res => callback(res));
 };

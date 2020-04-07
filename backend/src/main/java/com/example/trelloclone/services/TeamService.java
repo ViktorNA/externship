@@ -74,10 +74,12 @@ public class TeamService {
     return new ResponseEntity<>(new TeamResponse(team), HttpStatus.CREATED);
   }
 
-  public ResponseEntity<ApiResponse> addUserToTeam(Long teamId, Long userId) {
+  public ResponseEntity<ApiResponse> addUserToTeam(Long teamId, Long userId, UserPrincipal user) {
     UserEntity userEntity = userRepository.getOne(userId);
     validateTeamAndUser(teamId, userId);
     TeamEntity teamEntity = teamRepository.getOne(teamId);
+    boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(user.getId());
+    if (!isUserCreatorOfTeam) throw new BadRequestException("Only creator can add users to team");
     if (teamEntity.isUserBelongsToTeamById(userId))
       throw new BadRequestException("User already belongs to team");
     teamEntity.getUsers().add(userEntity);
@@ -87,11 +89,11 @@ public class TeamService {
         new ApiResponse(true, "User added to team successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<ApiResponse> deleteUserFromTeam(Long teamId, Long userId) {
+  public ResponseEntity<ApiResponse> deleteUserFromTeam(Long teamId, Long userId, UserPrincipal user) {
     validateTeamAndUser(teamId, userId);
     TeamEntity teamEntity = teamRepository.getOne(teamId);
-    boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(userId);
-    if (!isUserCreatorOfTeam) throw new BadRequestException("Only creator can add users to team");
+    boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(user.getId());
+    if (!isUserCreatorOfTeam) throw new BadRequestException("Only creator can delete users from team");
     if (!teamEntity.isUserBelongsToTeamById(userId))
       throw new BadRequestException("The user is not belong to the team");
 

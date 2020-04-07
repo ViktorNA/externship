@@ -13,6 +13,9 @@ const StateProvider = ( { children } ) => {
       case 'SAVE_TEAMS':{
         return { ...state, teams: action.teams, setTeams: action.setTeams };
       }
+      case 'SAVE_BOARDS':{
+        return { ...state, boards: action.boards, setBoards: action.setBoards };
+      }
       default:
         throw new Error();
     }

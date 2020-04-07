@@ -1,74 +1,35 @@
 import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
-import {Icon, Card, Input} from 'semantic-ui-react';
-import classNames from 'classnames';
-import appStyles from '../../App.scss';
-import styles from './BoardCard.scss';
-import iconStyles from '../../Icons.scss';
+import BoardCardEdit from './BoardCardEdit.jsx';
+import BoardCardName from './BardCardName.jsx';
+import {renameBoardById} from '../../../utils/APIRequests/BoardRequests.jsx';
+import {useStore} from '../../../store/store.jsx';
+import createNotification from '../../../utils/Notifications.jsx';
 
 const BoardCard = ({board, deleteBoardHandler}) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [boardName, setBoardName] = useState(board.name);
+  const [state]= useStore();
+  const {boards, setBoards} = state;
 
-  const deleteOnClick = (e) => {
-    e.preventDefault();
-    deleteBoardHandler(board.id);
+  const renameBoardCallback = (boardName) => (data) => {
+    const newBoards = boards.filter( (newBoard) => newBoard.id !== board.id);
+    setBoards([...newBoards, {...board, name: boardName}]);
+    setIsEditing(!isEditing);
   };
+  const renameBoard = (boardName) => {
+    if(!boardName) {
+      createNotification('error')('Board name can not be blank');
+      return;
+    }
+    renameBoardById(board.id, {...board, name: boardName}, renameBoardCallback(boardName));
+  };
+
   const toggleEditing = (e) => {
     e.preventDefault();
     setIsEditing(!isEditing);
-    setBoardName(board.name);
   };
-
-
-  if(!isEditing) return(
-    <Link to={`/boards/${board.id}`} className={appStyles.menuItem}>
-      <Card>
-        <Card.Content>
-          <Card.Header>
-            {board.name}
-            <div className={iconStyles.iconBox}>
-              <Icon
-                className={classNames(iconStyles.Icon, iconStyles.deleteIcon)}
-                onClick={deleteOnClick}
-                name='delete'
-              />
-              <Icon
-                className={classNames(iconStyles.Icon, iconStyles.editIcon)}
-                name='pencil'
-                onClick={toggleEditing}
-              />
-            </div>
-          </Card.Header>
-        </Card.Content>
-      </Card>
-    </Link>
-    );
-  else return (
-    <div>
-      <Card>
-        <Card.Content>
-          <Card.Header>
-            <div className={styles.editFormContainer}>
-              <div className={styles.inputWrapper}>
-                <Input
-                  fluid
-                  transparent
-                  value={boardName}
-                  onChange={ e => setBoardName(e.target.value)}
-                  placeholder='Enter new name'/>
-              </div>
-              <div className={iconStyles.iconBox}>
-                <Icon className={iconStyles.deleteIcon} name="close" onClick={toggleEditing} link/>
-                <Icon className={iconStyles.checkIcon} name="check" link/>
-              </div>
-
-            </div>
-          </Card.Header>
-        </Card.Content>
-      </Card>
-    </div>
-  );
+  return isEditing ?
+    (<BoardCardEdit board={board} toggleEditing={toggleEditing} renameBoard={renameBoard}/>) :
+    (<BoardCardName board={board} toggleEditing={toggleEditing} deleteBoardHandler={deleteBoardHandler}/>);
 };
 
 export default BoardCard;

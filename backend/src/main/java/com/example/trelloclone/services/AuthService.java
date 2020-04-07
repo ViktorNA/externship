@@ -96,4 +96,16 @@ public class AuthService {
     return ResponseEntity.created(location)
         .body(new ApiResponse(true, "User registered successfully"));
   }
+
+  public ResponseEntity<ApiResponse> isExistByUsername(String username) {
+    return new ResponseEntity<>(
+        new ApiResponse(userRepository.existsByUsername(username), "Username checking/"),
+        HttpStatus.OK);
+  }
+
+  public ResponseEntity<ApiResponse> isExistByEmail(String email) {
+    return new ResponseEntity<>(
+        new ApiResponse(userRepository.existsByEmail(email), "Username checking/"),
+        HttpStatus.OK);
+  }
 }

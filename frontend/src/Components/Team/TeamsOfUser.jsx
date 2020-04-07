@@ -3,11 +3,13 @@ import {createTeam, deleteTeam, getTeamsOfUser} from '../../utils/APIRequests/Te
 import TeamCard from './TeamCard/TeamCard.jsx';
 import {useStore} from '../../store/store.jsx';
 import styles from './TeamsOfUser.scss';
+import createNotification from '../../utils/Notifications.jsx';
 
 const TeamsOfUser = () => {
   const [teamName, setTeamName] = useState('');
   const [teams, setTeams] = useState([]);
   const [state, dispatch] = useStore();
+  const createErrorNotification = createNotification('error');
 
   const createTeamCallback = (newTeam) => {
     setTeams([...teams, newTeam]);
@@ -15,6 +17,10 @@ const TeamsOfUser = () => {
   };
   const handleCreateTeam = (e) => {
     e.preventDefault();
+    if(!teamName) {
+      createErrorNotification("Name can't be empty");
+      return;
+    }
     createTeam({name: teamName}, createTeamCallback);
   };
   const handleDeleteTeam = (teamId) => {
@@ -22,7 +28,6 @@ const TeamsOfUser = () => {
     setTeams(teams.filter( (team) => team.id !== teamId));
   };
   useEffect( () => {
-    dispatch({type: 'SET_USER_ID', userId: 2});
     getTeamsOfUser(setTeams);
   }, []);
   useEffect( () => {

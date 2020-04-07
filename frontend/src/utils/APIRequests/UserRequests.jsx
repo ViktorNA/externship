@@ -8,3 +8,10 @@ export const getUserInfoByUsername = (username, callback) => {
       callback(res.data);
     })
 };
+
+export const getAllUsers = (callback) => {
+  axios.get(`${BASE_URL}/users`, config())
+    .then( (res) => {
+      callback(res.data);
+    })
+};

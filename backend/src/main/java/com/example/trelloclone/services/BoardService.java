@@ -49,6 +49,7 @@ public class BoardService {
       new ResponseEntity<>(new ApiResponse(false, "Cannot access board"), HttpStatus.OK);
     BoardEntity boardEntity = boardRepository.getOne(boardId);
     boardEntity.setName(newName);
+    boardRepository.saveAndFlush(boardEntity);
     return new ResponseEntity<>(new ApiResponse(true, "Renamed successfully"), HttpStatus.OK);
   }
 

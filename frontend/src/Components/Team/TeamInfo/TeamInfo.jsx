@@ -3,7 +3,6 @@ import {Link, useParams} from 'react-router-dom';
 import {createBoard, getBoardsOfTeam, getUsersOfTeam} from '../../../utils/APIRequests/TeamRequest.jsx';
 import BoardList from '../../BoardList/BoardList.jsx';
 import {deleteBoard} from '../../../utils/APIRequests/BoardRequests.jsx';
-import AddUser from './AddUser.jsx';
 
 const TeamInfo = () => {
   const {teamId} = useParams();
@@ -41,11 +40,6 @@ const TeamInfo = () => {
         addNewBoard={addBoard}
         isLoading={isLoading}
         />
-      <h5>Users of team:</h5>
-      <div>
-        {users.map( (user, index) => <span key={user.id}>{index ? ', ' : ''}<Link to={`/users/${user.username}`} >{user.username}</Link></span>)}
-      </div>
-      <AddUser members={users} teamId={teamId}/>
     </div>
   )
 };

@@ -2,9 +2,9 @@ import React from 'react'
 import { Card, Icon, Image } from 'semantic-ui-react'
 import {Link} from 'react-router-dom';
 import classNames from 'classnames';
+import EditModal from '../EditModal/EditModal.jsx';
 import styles from '../../App.scss';
 import iconStyles from '../../Icons.scss';
-import EditModal from '../EditModal/EditModal.jsx';
 
 const TeamCard = ({team, handleDeleteTeam}) => {
   const {name, creator={}, memberCount, boardCount, description, id} = team;
@@ -45,10 +45,10 @@ const TeamCard = ({team, handleDeleteTeam}) => {
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <a onClick={handleMembersOnClick}>
+          <span>
             <Icon name='user'/>
             {memberCount} Member(s)
-          </a>
+          </span>
         </Card.Content>
       </Card>
     </Link>
