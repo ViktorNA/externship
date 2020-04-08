@@ -1,19 +1,16 @@
-import React, {createContext, useReducer, useContext} from 'react';
+import React, { createContext, useReducer, useContext } from 'react';
 
-const initialState = {userId: 1};
+const initialState = { userId: 1 };
 const store = createContext(initialState);
 const { Provider } = store;
 
-const StateProvider = ( { children } ) => {
+const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
-    switch(action.type) {
-      case 'SET_USER_ID':{
-        return { ...state, userId: action.userId };
-      }
-      case 'SAVE_TEAMS':{
+    switch (action.type) {
+      case 'SAVE_TEAMS': {
         return { ...state, teams: action.teams, setTeams: action.setTeams };
       }
-      case 'SAVE_BOARDS':{
+      case 'SAVE_BOARDS': {
         return { ...state, boards: action.boards, setBoards: action.setBoards };
       }
       default:
@@ -25,7 +22,7 @@ const StateProvider = ( { children } ) => {
 };
 
 const useStore = () => {
-  const {state, dispatch} = useContext(store);
+  const { state, dispatch } = useContext(store);
   return [state, dispatch];
 };
 

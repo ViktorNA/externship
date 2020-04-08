@@ -1,17 +1,17 @@
 .Board {
-  display: inline-flex;
-  white-space: nowrap;
-  overflow-x: auto;
   height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .boardItem {
+  position: relative;
   width: 250px;
   background-color: beige;
   border-radius: 5px;
   padding: 5px;
   margin: 15px;
-  display: inline-flex;
-  flex-direction: column;
-  height: fit-content;
+  flex: 0 0 auto;
+  height: min-content;
 }

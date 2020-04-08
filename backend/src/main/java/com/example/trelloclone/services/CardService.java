@@ -37,7 +37,7 @@ public class CardService {
     return null;
   }
 
-  public void deleteCardById(Long cardId, long listId) {
+  public void deleteCardById(Long listId, Long cardId) {
     Integer position = cardRepository.getOne(cardId).getPosition();
     cardRepository.deleteById(cardId);
     reducePositions(listRepository.getOne(listId).getCards(), position);

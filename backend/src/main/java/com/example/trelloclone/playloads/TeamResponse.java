@@ -17,11 +17,7 @@ public class TeamResponse {
         this.name = team.getName();
         this.description = team.getDescription();
         this.memberCount = team.getUsers().size();
-        if(team.getBoards() == null) {
-            this.boardCount = 0;
-        } else {
-            this.boardCount = team.getBoards().size();
-        }
+        this.boardCount = team.getBoards() == null ? 0 : team.getBoards().size();
         this.creator = team.getCreator();
     }
 }

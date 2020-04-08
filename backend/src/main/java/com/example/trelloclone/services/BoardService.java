@@ -53,9 +53,9 @@ public class BoardService {
     return new ResponseEntity<>(new ApiResponse(true, "Renamed successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<BoardEntity> getBoardById(Long boardId, UserPrincipal user) {
+  public ResponseEntity<List<ListEntity>> getBoardById(Long boardId, UserPrincipal user) {
     if (isUserHasAccessToBoard(user.getId(), boardId)) {
-      return new ResponseEntity<>(boardRepository.getOne(boardId), HttpStatus.OK);
+      return new ResponseEntity<>(boardRepository.getOne(boardId).getLists(), HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
   }

@@ -1,6 +1,7 @@
 package com.example.trelloclone.controllers;
 
 import com.example.trelloclone.entities.BoardEntity;
+import com.example.trelloclone.entities.ListEntity;
 import com.example.trelloclone.entities.UserBoardEntity;
 import com.example.trelloclone.playloads.ApiResponse;
 import com.example.trelloclone.security.CurrentUser;
@@ -36,12 +37,14 @@ public class BoardController {
   }
 
   @PutMapping("rename")
-  public ResponseEntity<ApiResponse> renameBoard(@RequestParam Long boardId, @RequestBody BoardEntity board, @CurrentUser UserPrincipal user) {
+  public ResponseEntity<ApiResponse> renameBoard(
+      @RequestParam Long boardId, @RequestBody BoardEntity board, @CurrentUser UserPrincipal user) {
     return boardService.renameBoard(boardId, board.getName(), user);
   }
 
   @GetMapping("/{boardId}")
-  public ResponseEntity<BoardEntity> getBoardById(@PathVariable Long boardId, @CurrentUser UserPrincipal user) {
+  public ResponseEntity<List<ListEntity>> getBoardById(
+      @PathVariable Long boardId, @CurrentUser UserPrincipal user) {
     return boardService.getBoardById(boardId, user);
   }
 

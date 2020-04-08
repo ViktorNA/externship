@@ -89,11 +89,14 @@ public class TeamService {
         new ApiResponse(true, "User added to team successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<ApiResponse> deleteUserFromTeam(Long teamId, Long userId, UserPrincipal user) {
+  public ResponseEntity<ApiResponse> deleteUserFromTeam(
+      Long teamId, Long userId, UserPrincipal user) {
     validateTeamAndUser(teamId, userId);
     TeamEntity teamEntity = teamRepository.getOne(teamId);
     boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(user.getId());
-    if (!isUserCreatorOfTeam) throw new BadRequestException("Only creator can delete users from team");
+    boolean isUserLeaveTeam = user.getId().equals(userId);
+    if (!(isUserCreatorOfTeam || isUserLeaveTeam))
+      throw new BadRequestException("Only creator can delete users from team");
     if (!teamEntity.isUserBelongsToTeamById(userId))
       throw new BadRequestException("The user is not belong to the team");
 
@@ -109,21 +112,25 @@ public class TeamService {
   public ResponseEntity<ApiResponse> deleteTeamById(Long teamId, UserPrincipal user) {
     validateTeamAndUser(teamId, user.getId());
     TeamEntity teamEntity = teamRepository.getOne(teamId);
-    boolean isUserCreatorOfTeam = teamId.equals(user.getId());
-    if (isUserCreatorOfTeam) throw new BadRequestException("Delete team can only creator");
+    boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(user.getId());
+    if (!isUserCreatorOfTeam) throw new BadRequestException("Delete team can only creator");
     List<UserEntity> usersOfTeam = teamEntity.getUsers();
-    usersOfTeam.parallelStream().forEach(userEntity -> {
-      userEntity.deleteTeamById(teamId);
-      userRepository.saveAndFlush(userEntity);
-    });
+    usersOfTeam
+        .parallelStream()
+        .forEach(
+            userEntity -> {
+              userEntity.deleteTeamById(teamId);
+              userRepository.saveAndFlush(userEntity);
+            });
     return new ResponseEntity<>(new ApiResponse(true, "Deleted successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<ApiResponse> updateTeam(Long teamId, TeamEntity newTeam, UserPrincipal user) {
+  public ResponseEntity<ApiResponse> updateTeam(
+      Long teamId, TeamEntity newTeam, UserPrincipal user) {
     validateTeamAndUser(teamId, user.getId());
     TeamEntity teamEntity = teamRepository.getOne(teamId);
-    boolean isUserCreatorOfTeam = teamId.equals(user.getId());
-    if (isUserCreatorOfTeam) throw new BadRequestException("Update team can only creator");
+    boolean isUserCreatorOfTeam = teamEntity.getCreator().getId().equals(user.getId());
+    if (!isUserCreatorOfTeam) throw new BadRequestException("Update team can only creator");
     teamEntity.setName(newTeam.getName());
     teamEntity.setDescription(newTeam.getDescription());
     teamRepository.saveAndFlush(teamEntity);
