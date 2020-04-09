@@ -1,9 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import BoardsOfUser from '../Components/BoardsOfUser/BoardsOfUser.jsx';
 import ListBoard from '../Components/ListBoard/ListBoard.jsx';
 import LoginForm from '../Components/Authorization/LoginForm.jsx';
@@ -16,56 +12,48 @@ import Home from '../Components/Home/Home.jsx';
 import About from '../Components/About/About.jsx';
 import TeamInfo from '../Components/Team/TeamInfo/TeamInfo.jsx';
 import Profile from '../Components/Profile/Profile.jsx';
+import BoardsRouter from './BoardsRouter.jsx';
 
 const MainRouter = () => {
   return (
-    <Router>
-      <Header/>
-      <Switch>
+    <Switch>
+      <Route exact path="/about">
+        <About />
+      </Route>
 
-        <Route exact path="/about">
-          <About/>
-        </Route>
+      <PrivateRoute path="/boards">
+        <BoardsRouter />
+      </PrivateRoute>
 
-        <PrivateRoute exact path="/boards">
-          <BoardsOfUser/>
-        </PrivateRoute>
+      <Route exact path="/login">
+        <LoginForm />
+      </Route>
 
-        <PrivateRoute exact path="/boards/:boardId" >
-          <ListBoard />
-        </PrivateRoute>
+      <Route exact path="/signup">
+        <SignupForm />
+      </Route>
 
-        <Route exact path='/login' >
-          <LoginForm/>
-        </Route>
+      <PrivateRoute path="/teams">
+        <BoardsRouter />
+      </PrivateRoute>
 
-        <Route exact path="/signup" >
-          <SignupForm />
-        </Route>
+      <PrivateRoute exact path="/teams/:teamId">
+        <TeamInfo />
+      </PrivateRoute>
 
-        <PrivateRoute exact path="/teams">
-          <TeamsOfUser/>
-        </PrivateRoute>
+      <PrivateRoute exact path="/users/:username">
+        <Profile />
+      </PrivateRoute>
 
-        <PrivateRoute exact path="/teams/:teamId">
-          <TeamInfo/>
-        </PrivateRoute>
+      <Route exact path="/">
+        <Home />
+      </Route>
 
-        <PrivateRoute exact path="/users/:username">
-          <Profile/>
-        </PrivateRoute>
-
-        <Route exact path="/" >
-          <Home/>
-        </Route>
-
-        <Route>
-          <PageNotFound/>
-        </Route>
-
-      </Switch>
-    </Router>
-  )
+      <Route>
+        <PageNotFound />
+      </Route>
+    </Switch>
+  );
 };
 
 export default MainRouter;

@@ -48,7 +48,7 @@ const ListBoard = () => {
   };
   useEffect(() => {
     getBoardById(boardId, setLists, getBoardErrorCallback);
-  }, []);
+  }, [boardId]);
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId={`$s{boardId}`} direction={'horizontal'}>

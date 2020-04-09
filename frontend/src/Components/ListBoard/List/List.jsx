@@ -6,7 +6,7 @@ import {
   deleteCardById,
   getCardsOfList,
 } from '../../../utils/APIRequests/CardRequests.jsx';
-import { Icon, Button } from 'semantic-ui-react';
+import { Icon, Button, Input } from 'semantic-ui-react';
 import createNotification from '../../../utils/Notifications.jsx';
 import Card from './Card/Card.jsx';
 import listStyles from './List.scss';
@@ -63,7 +63,7 @@ const List = ({ listName, index, id, boardId, deleteList }) => {
             </div>
           </div>
           <form onSubmit={handleAddCard}>
-            <input
+            <Input
               value={newCardName}
               onChange={(e) => setNewCardName(e.target.value)}
               className={listStyles.cardNameInput}

@@ -59,7 +59,7 @@ const TeamCard = ({ team, handleDeleteTeam }) => {
   };
 
   return (
-    <Link to={`teams/${id}`} className={styles.menuItem}>
+    <Link to={`/teams/${id}`} className={styles.menuItem}>
       <Card>
         <Card.Content>
           <Card.Header>
