@@ -11,6 +11,7 @@ import com.example.trelloclone.entities.UserEntity;
 import com.example.trelloclone.exceptions.BadRequestException;
 import com.example.trelloclone.exceptions.ResourceNotFoundException;
 import com.example.trelloclone.playloads.ApiResponse;
+import com.example.trelloclone.playloads.TeamBoardsResponse;
 import com.example.trelloclone.playloads.TeamResponse;
 import com.example.trelloclone.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +160,16 @@ public class TeamService {
     teamEntity.deleteBoardFromTeamById(boardId);
     return new ResponseEntity<>(
         new ApiResponse(true, "Board deleted from team"), HttpStatus.CREATED);
+  }
+
+  public ResponseEntity<List<TeamBoardsResponse>> getTeamBoardsOfUser(UserPrincipal user) {
+    UserEntity userEntity = userRepository.getOne(user.getId());
+    List<TeamEntity> teams = userEntity.getTeams();
+    List<TeamBoardsResponse> teamsResponse = new ArrayList<>();
+    teams
+        .parallelStream()
+        .forEach(teamEntity -> teamsResponse.add(new TeamBoardsResponse(teamEntity)));
+    return new ResponseEntity<>(teamsResponse, HttpStatus.OK);
   }
 
   private void validateTeamAndUser(Long teamId, Long userId) {

@@ -4,6 +4,7 @@ import com.example.trelloclone.entities.TeamBoardEntity;
 import com.example.trelloclone.entities.TeamEntity;
 import com.example.trelloclone.entities.UserEntity;
 import com.example.trelloclone.playloads.ApiResponse;
+import com.example.trelloclone.playloads.TeamBoardsResponse;
 import com.example.trelloclone.playloads.TeamResponse;
 import com.example.trelloclone.security.CurrentUser;
 import com.example.trelloclone.security.UserPrincipal;
@@ -65,6 +66,11 @@ public class TeamController {
   public ResponseEntity<List<UserEntity>> getUsersOfTeam(
       @CurrentUser UserPrincipal user, @PathVariable Long teamId) {
     return teamService.getUsersOfTeam(teamId, user);
+  }
+
+  @GetMapping("teamBoardsOfUser")
+  public ResponseEntity<List<TeamBoardsResponse>> getTeamBoardsOfUser(@CurrentUser UserPrincipal user) {
+    return teamService.getTeamBoardsOfUser(user);
   }
 
   @GetMapping("boardsOfTeam/{boardId}")

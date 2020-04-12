@@ -36,7 +36,7 @@ const TeamsOfUser = () => {
     getTeamsOfUser(setTeams);
   }, []);
   useEffect(() => {
-    dispatch({ type: 'SAVE_TEAMS', teams: teams, setTeams });
+    dispatch({ type: 'SAVE_TEAMS', teams: teams });
   }, [teams]);
   return (
     <div>

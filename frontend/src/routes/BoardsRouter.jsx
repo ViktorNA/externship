@@ -41,9 +41,6 @@ const BoardsRouter = () => {
           <Route exact path={'/boards/:boardId'}>
             <ListBoard />
           </Route>
-          <Route exact path={'/teams'}>
-            <BoardsOfUser />
-          </Route>
           <Route exact path="/teams/:teamId">
             <TeamInfo />
           </Route>

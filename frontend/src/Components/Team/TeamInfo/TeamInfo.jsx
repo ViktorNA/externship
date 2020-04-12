@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import {
   createBoard,
   getBoardsOfTeam,
-  getUsersOfTeam,
 } from '../../../utils/APIRequests/TeamRequest.jsx';
 import BoardList from '../../BoardList/BoardList.jsx';
 import { deleteBoard } from '../../../utils/APIRequests/BoardRequests.jsx';
@@ -12,30 +11,29 @@ import { useStore } from '../../../store/store.jsx';
 const TeamInfo = () => {
   const { teamId } = useParams();
   const [boards, setBoards] = useState([]);
-  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [state, dispatch] = useStore();
+  const { teamBoards } = state;
 
   const getBoardsCallback = (data) => {
     setBoards(data);
   };
-  const getUsersCallback = (data) => {
-    setUsers(data);
-  };
   useEffect(() => {
     getBoardsOfTeam(teamId, getBoardsCallback);
-    getUsersOfTeam(teamId, getUsersCallback);
   }, [teamId]);
   const addBoard = (newBoard) => {
     setIsLoading(true);
     createBoard(newBoard, teamId, addBoardCallback);
   };
   const addBoardCallback = (data) => {
-    setBoards([...boards, data]);
+    const newBoards = [...boards, data];
+    setBoards(newBoards);
     setIsLoading(false);
   };
   const deleteBoardHandler = (boardId) => {
     deleteBoard(boardId, () => {});
-    setBoards(boards.filter((board) => board.id !== boardId));
+    const newBoards = boards.filter((board) => board.id !== boardId);
+    setBoards(newBoards);
   };
   return (
     <div>
