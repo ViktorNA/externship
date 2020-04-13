@@ -1,9 +1,11 @@
 package com.example.trelloclone.services;
 
 import com.example.trelloclone.dao.RoleRepository;
+import com.example.trelloclone.dao.UnconfirmedUserRepository;
 import com.example.trelloclone.dao.UserRepository;
 import com.example.trelloclone.entities.RoleEntity;
 import com.example.trelloclone.entities.RoleName;
+import com.example.trelloclone.entities.UnconfirmedUserEntity;
 import com.example.trelloclone.entities.UserEntity;
 import com.example.trelloclone.exceptions.AppException;
 import com.example.trelloclone.playloads.ApiResponse;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -38,6 +41,10 @@ public class AuthService {
   @Autowired PasswordEncoder passwordEncoder;
 
   @Autowired JwtTokenProvider tokenProvider;
+
+  @Autowired UnconfirmedUserRepository unconfirmedUserRepository;
+
+  @Autowired EmailService emailService;
 
   public ResponseEntity<JwtAuthenticationResponse> authenticateUser(LoginRequest loginRequest) {
     String usernameOrEmail = loginRequest.getUsernameOrEmail();
@@ -56,8 +63,12 @@ public class AuthService {
   }
 
   public ResponseEntity<ApiResponse> registerUser(SignUpRequest signUpRequest) {
-    Boolean isUsernameTaken = userRepository.existsByUsername(signUpRequest.getUsername());
-    Boolean isEmailTaken = userRepository.existsByEmail(signUpRequest.getEmail());
+    boolean isUsernameTaken =
+        userRepository.existsByUsername(signUpRequest.getUsername())
+            || unconfirmedUserRepository.existsByUsername(signUpRequest.getUsername());
+    boolean isEmailTaken =
+        userRepository.existsByEmail(signUpRequest.getEmail())
+            || unconfirmedUserRepository.existsByEmail(signUpRequest.getEmail());
     if (isUsernameTaken) {
       return new ResponseEntity<>(
           new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
@@ -68,13 +79,30 @@ public class AuthService {
           new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
     }
 
-    // Creating user's account
+    UnconfirmedUserEntity unconfirmedUser =
+        new UnconfirmedUserEntity(UUID.randomUUID().toString(), signUpRequest);
+
+    unconfirmedUserRepository.saveAndFlush(unconfirmedUser);
+    String messageBody = "http://localhost:3000/confirm/" + unconfirmedUser.getConfirmToken();
+    emailService.sendMail(unconfirmedUser.getEmail(), "Confirm email", messageBody);
+
+    return ResponseEntity.ok(new ApiResponse(true, "Confirm email to finish registration"));
+  }
+
+  public ResponseEntity<ApiResponse> confirmEmail(String token) {
+    Boolean isTokenExist = unconfirmedUserRepository.existsByConfirmToken(token);
+    if (!isTokenExist) {
+      return new ResponseEntity<>(
+          new ApiResponse(false, "Token is not exist"), HttpStatus.NOT_FOUND);
+    }
+    UnconfirmedUserEntity unconfirmedUser = unconfirmedUserRepository.findByConfirmToken(token);
+
     UserEntity user =
         new UserEntity(
-            signUpRequest.getName(),
-            signUpRequest.getUsername(),
-            signUpRequest.getEmail(),
-            signUpRequest.getPassword());
+            unconfirmedUser.getName(),
+            unconfirmedUser.getUsername(),
+            unconfirmedUser.getEmail(),
+            unconfirmedUser.getPassword());
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -85,7 +113,8 @@ public class AuthService {
 
     user.setRoles(Collections.singleton(userRole));
 
-    UserEntity result = userRepository.save(user);
+    UserEntity result = userRepository.saveAndFlush(user);
+    unconfirmedUserRepository.delete(unconfirmedUser);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -94,7 +123,7 @@ public class AuthService {
             .toUri();
 
     return ResponseEntity.created(location)
-        .body(new ApiResponse(true, "User registered successfully"));
+        .body(new ApiResponse(true, "User successfully registered!"));
   }
 
   public ResponseEntity<ApiResponse> isExistByUsername(String username) {
@@ -105,7 +134,6 @@ public class AuthService {
 
   public ResponseEntity<ApiResponse> isExistByEmail(String email) {
     return new ResponseEntity<>(
-        new ApiResponse(userRepository.existsByEmail(email), "Username checking/"),
-        HttpStatus.OK);
+        new ApiResponse(userRepository.existsByEmail(email), "Username checking/"), HttpStatus.OK);
   }
 }

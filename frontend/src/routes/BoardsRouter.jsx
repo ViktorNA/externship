@@ -21,17 +21,7 @@ const BoardsRouter = () => {
   return (
     <div className={styles.Container}>
       <div className={styles.Left}>
-        <Switch>
-          <Route path={'/teams'}>
-            <TeamsOfUser />
-          </Route>
-          <Route path={'/boards'}>
-            <SideBar />
-          </Route>
-          <Route>
-            <TeamsOfUser />
-          </Route>
-        </Switch>
+        <SideBar />
       </div>
       <div className={styles.Right}>
         <Switch>

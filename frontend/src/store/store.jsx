@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from 'react';
 
-const initialState = {};
+const initialState = { sideBarMode: 'boards' };
 const store = createContext(initialState);
 const { Provider } = store;
 
@@ -15,6 +15,9 @@ const StateProvider = ({ children }) => {
       }
       case 'SAVE_TEAM_BOARDS': {
         return { ...state, teamBoards: action.teamBoards };
+      }
+      case 'SET_SIDEBAR_MODE': {
+        return { ...state, sideBarMode: action.sideBarMode };
       }
       default:
         throw new Error();

@@ -17,6 +17,11 @@ public class AuthController {
 
   @Autowired AuthService authService;
 
+  @PostMapping("/confirm/{token}")
+  public ResponseEntity<ApiResponse> confirmEmail(@PathVariable String token) {
+    return authService.confirmEmail(token);
+  }
+
   @PostMapping("/signin")
   public ResponseEntity<JwtAuthenticationResponse> authenticateUser(
       @Valid @RequestBody LoginRequest loginRequest) {

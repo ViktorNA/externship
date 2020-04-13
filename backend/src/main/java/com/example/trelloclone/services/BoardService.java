@@ -2,8 +2,6 @@ package com.example.trelloclone.services;
 
 import com.example.trelloclone.dao.*;
 import com.example.trelloclone.entities.*;
-import com.example.trelloclone.exceptions.BadRequestException;
-import com.example.trelloclone.exceptions.ResourceNotFoundException;
 import com.example.trelloclone.playloads.ApiResponse;
 import com.example.trelloclone.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,6 +13,8 @@ import About from '../Components/About/About.jsx';
 import TeamInfo from '../Components/Team/TeamInfo/TeamInfo.jsx';
 import Profile from '../Components/Profile/Profile.jsx';
 import BoardsRouter from './BoardsRouter.jsx';
+import ConfirmEmail from '../Components/Authorization/ConfirmEmail.jsx';
+import EmailConfirmed from '../Components/Authorization/EmailConfirmed.jsx';
 
 const MainRouter = () => {
   return (
@@ -47,6 +49,14 @@ const MainRouter = () => {
 
       <Route exact path="/">
         <Home />
+      </Route>
+
+      <Route exact path="/confirmEmail">
+        <ConfirmEmail />
+      </Route>
+
+      <Route exact path="/confirm/:token">
+        <EmailConfirmed />
       </Route>
 
       <Route>

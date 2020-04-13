@@ -28,12 +28,20 @@ const TeamInfo = () => {
   const addBoardCallback = (data) => {
     const newBoards = [...boards, data];
     setBoards(newBoards);
+    const teams = teamBoards.map((team) =>
+      team.id === Number(teamId) ? { ...team, boards: newBoards } : team
+    );
+    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: teams });
     setIsLoading(false);
   };
   const deleteBoardHandler = (boardId) => {
     deleteBoard(boardId, () => {});
     const newBoards = boards.filter((board) => board.id !== boardId);
     setBoards(newBoards);
+    const teams = teamBoards.map((team) =>
+      team.id === Number(teamId) ? { ...team, boards: newBoards } : team
+    );
+    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: teams });
   };
   return (
     <div>
