@@ -12,10 +12,13 @@ import { Button, Input } from 'semantic-ui-react';
 
 const TeamsOfUser = () => {
   const [teamName, setTeamName] = useState('');
-  const [teams, setTeams] = useState([]);
   const [state, dispatch] = useStore();
+  const { teams } = state;
   const createErrorNotification = createNotification('error');
 
+  const setTeams = (teams) => {
+    dispatch({ type: 'SAVE_TEAMS', teams });
+  };
   const createTeamCallback = (newTeam) => {
     setTeams([...teams, newTeam]);
     setTeamName('');
@@ -35,9 +38,6 @@ const TeamsOfUser = () => {
   useEffect(() => {
     getTeamsOfUser(setTeams);
   }, []);
-  useEffect(() => {
-    dispatch({ type: 'SAVE_TEAMS', teams: teams });
-  }, [teams]);
   return (
     <div>
       <form onSubmit={handleCreateTeam}>
@@ -60,6 +60,8 @@ const TeamsOfUser = () => {
           />
         ))}
       </div>
+
+      <br />
     </div>
   );
 };

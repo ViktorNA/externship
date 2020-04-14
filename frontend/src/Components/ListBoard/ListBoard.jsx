@@ -3,11 +3,12 @@ import { useParams, useHistory } from 'react-router-dom';
 import AddListFrom from './AddList/AddListForm.jsx';
 import List from './List/List.jsx';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import styles from './ListBoard.scss';
 import {
   changeListsPositions,
   getBoardById,
 } from '../../utils/APIRequests.jsx';
+import { Card } from 'semantic-ui-react';
+import styles from './ListBoard.scss';
 
 const ListBoard = () => {
   const [lists, setLists] = useState([]);
@@ -58,6 +59,7 @@ const ListBoard = () => {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
+            {console.log(lists)}
             {lists.map((list) => (
               <List
                 boardId={boardId}

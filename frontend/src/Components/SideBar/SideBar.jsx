@@ -4,6 +4,8 @@ import BoardExpandingList from './BoardExpandingList.jsx';
 import { getTeamBoardsOfUser } from '../../utils/APIRequests/TeamRequest.jsx';
 import TeamInfo from '../Team/TeamInfo/TeamInfo.jsx';
 import TeamsOfUser from '../Team/TeamsOfUser.jsx';
+import { Link } from 'react-router-dom';
+import styles from '../App.scss';
 
 const SideBar = () => {
   const [state, dispatch] = useStore();
@@ -26,7 +28,9 @@ const SideBar = () => {
     case 'boards':
       return (
         <div>
-          <BoardExpandingList title={`Your boards:`} boards={userBoards} />
+          <Link to={'/boards'} className={styles.menuItem}>
+            <BoardExpandingList title={`Your boards:`} boards={userBoards} />
+          </Link>
           {teamBoardsOfUser.map(
             (team) =>
               team.boards.length !== 0 && (

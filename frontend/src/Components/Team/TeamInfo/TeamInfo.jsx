@@ -13,7 +13,7 @@ const TeamInfo = () => {
   const [boards, setBoards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [state, dispatch] = useStore();
-  const { teamBoards } = state;
+  const { teamBoards, teams } = state;
 
   const getBoardsCallback = (data) => {
     setBoards(data);
@@ -28,20 +28,34 @@ const TeamInfo = () => {
   const addBoardCallback = (data) => {
     const newBoards = [...boards, data];
     setBoards(newBoards);
-    const teams = teamBoards.map((team) =>
+    const newTeamBoards = teamBoards.map((team) =>
       team.id === Number(teamId) ? { ...team, boards: newBoards } : team
     );
-    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: teams });
+    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: newTeamBoards });
+
+    const newTeams = teams.map((team) =>
+      team.id === Number(teamId)
+        ? { ...team, boardCount: team.boardCount + 1 }
+        : team
+    );
+    dispatch({ type: 'SAVE_TEAMS', teams: newTeams });
     setIsLoading(false);
   };
   const deleteBoardHandler = (boardId) => {
     deleteBoard(boardId, () => {});
     const newBoards = boards.filter((board) => board.id !== boardId);
     setBoards(newBoards);
-    const teams = teamBoards.map((team) =>
+    const newTeamBoards = teamBoards.map((team) =>
       team.id === Number(teamId) ? { ...team, boards: newBoards } : team
     );
-    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: teams });
+    dispatch({ type: 'SAVE_TEAM_BOARDS', teamBoards: newTeamBoards });
+
+    const newTeams = teams.map((team) =>
+      team.id === Number(teamId)
+        ? { ...team, boardCount: team.boardCount - 1 }
+        : team
+    );
+    dispatch({ type: 'SAVE_TEAMS', teams: newTeams });
   };
   return (
     <div>

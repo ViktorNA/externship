@@ -8,10 +8,12 @@
 .boardItem {
   position: relative;
   width: 250px;
-  background-color: beige;
   border-radius: 5px;
   padding: 5px;
   margin: 15px;
   flex: 0 0 auto;
   height: min-content;
+  //semantic styles
+  border: 1px solid rgba(34,36,38,.1);
+  background-color: #fff;
 }

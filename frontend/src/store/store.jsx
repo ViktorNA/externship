@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from 'react';
 
-const initialState = { sideBarMode: 'boards' };
+const initialState = { sideBarMode: 'boards', teams: [] };
 const store = createContext(initialState);
 const { Provider } = store;
 

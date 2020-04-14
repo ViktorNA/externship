@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Header,
@@ -10,44 +10,48 @@ import {
   Divider,
   Segment,
   Label,
-} from 'semantic-ui-react'
+} from 'semantic-ui-react';
 import {
   addUserToTeam,
   deleteUserFromTeam,
   getUsersOfTeam,
   updateTeam,
-} from '../../../utils/APIRequests/TeamRequest.jsx'
-import { useStore } from '../../../store/store.jsx'
-import { getAllUsers } from '../../../utils/APIRequests/UserRequests.jsx'
-import createNotification from '../../../utils/Notifications.jsx'
-import styles from './EditModal.scss'
-import { getSavedUserFromLocalStorage } from '../../../utils/LocalStorageUtils.jsx'
+} from '../../../utils/APIRequests/TeamRequest.jsx';
+import { useStore } from '../../../store/store.jsx';
+import { getAllUsers } from '../../../utils/APIRequests/UserRequests.jsx';
+import createNotification from '../../../utils/Notifications.jsx';
+import styles from './EditModal.scss';
+import { getSavedUserFromLocalStorage } from '../../../utils/LocalStorageUtils.jsx';
 
 const EditModal = ({ trigger, name, description = '', id }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [newName, setNewName] = useState(name)
-  const [newDescription, setNewDescription] = useState(description)
-  const [members, setMembers] = useState([])
-  const [isMembersLoading, setIsMembersLoading] = useState(true)
-  const [users, setUsers] = useState([])
-  const [newUsers, setNewUsers] = useState([])
-  const [isUsersLoading, setIsUsersLoading] = useState(true)
-  const [isNewNameEmpty, setIsNewNameEmpty] = useState(false)
-  const [state] = useStore()
-  const { teams, setTeams } = state
-  const errorNotification = createNotification('error')
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newName, setNewName] = useState(name);
+  const [newDescription, setNewDescription] = useState(description);
+  const [members, setMembers] = useState([]);
+  const [isMembersLoading, setIsMembersLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [newUsers, setNewUsers] = useState([]);
+  const [isUsersLoading, setIsUsersLoading] = useState(true);
+  const [isNewNameEmpty, setIsNewNameEmpty] = useState(false);
+  const [state, dispatch] = useStore();
+  const { teams } = state;
+  const errorNotification = createNotification('error');
+
+  const setTeams = (teams) => {
+    dispatch({ type: 'SAVE_TEAMS', teams });
+  };
 
   const handleOpen = (e) => {
-    e.preventDefault()
-    setIsModalOpen(true)
-  }
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
 
   const handleClose = (e) => {
-    e.preventDefault()
-    setIsModalOpen(false)
-    setNewName(name)
-    setNewDescription(description)
-  }
+    e.preventDefault();
+    setIsModalOpen(false);
+    setNewName(name);
+    setNewDescription(description);
+  };
 
   const submitEditingCallback = (res) => {
     setTeams(
@@ -56,74 +60,78 @@ const EditModal = ({ trigger, name, description = '', id }) => {
           ? { ...team, name: newName, description: newDescription }
           : team
       )
-    )
-  }
+    );
+  };
 
   const submitEditing = (e) => {
     if (!newName) {
-      setIsNewNameEmpty(true)
-      errorNotification("Team name can't be empty")
-      return
+      setIsNewNameEmpty(true);
+      errorNotification("Team name can't be empty");
+      return;
     }
     updateTeam(
       id,
       { name: newName, description: newDescription },
       submitEditingCallback
-    )
-    handleClose(e)
-  }
+    );
+    handleClose(e);
+  };
   const getMembersCallback = (data) => {
-    setMembers(data)
-    setIsMembersLoading(false)
-  }
+    setMembers(data);
+    setIsMembersLoading(false);
+  };
   const getUsersCallback = (data) => {
-    setUsers(data)
-    setIsUsersLoading(false)
-  }
+    setUsers(data);
+    setIsUsersLoading(false);
+  };
   const deleteUserCallback = (userId) => () => {
-    setMembers(members.filter((member) => member.id !== userId))
+    setMembers(members.filter((member) => member.id !== userId));
     setTeams(
       teams.map((team) =>
         team.id === id ? { ...team, memberCount: team.memberCount - 1 } : team
       )
-    )
-  }
+    );
+  };
   const handleDeleteMember = (userId) => {
-    deleteUserFromTeam(id, userId, deleteUserCallback(userId))
-  }
+    deleteUserFromTeam(id, userId, deleteUserCallback(userId));
+  };
   const addUserCallback = (userId) => () => {
-    const newMember = users.filter((user) => user.id === userId)
-    setMembers([...members, ...newMember])
+    const newMember = users.filter((user) => user.id === userId);
+    setMembers([...members, ...newMember]);
     setTeams(
       teams.map((team) =>
         team.id === id ? { ...team, memberCount: team.memberCount + 1 } : team
       )
-    )
-  }
+    );
+  };
   const handleAddMember = (userId) => {
-    addUserToTeam(id, userId, addUserCallback(userId))
-  }
+    addUserToTeam(id, userId, addUserCallback(userId));
+  };
   const handleNewNameOnChange = (e) => {
-    setNewName(e.target.value)
-    setIsNewNameEmpty(false)
+    setNewName(e.target.value);
+    setIsNewNameEmpty(false);
     if (!e.target.value) {
-      setIsNewNameEmpty(true)
+      setIsNewNameEmpty(true);
     }
-  }
+  };
   const isUserCreatorOfTeam = (userId) => {
-    const team = teams.find((team) => team.id === id)
-    return team.creator.id === userId
-  }
+    const team = teams.find((team) => team.id === id);
+    return team.creator.id === userId;
+  };
 
   useEffect(() => {
-    getUsersOfTeam(id, getMembersCallback)
-    getAllUsers(getUsersCallback)
-  }, [])
+    getUsersOfTeam(id, getMembersCallback);
+    getAllUsers(getUsersCallback);
+  }, []);
   useEffect(() => {
     setNewUsers(
       users.filter((user) => !members.some((member) => member.id === user.id))
-    )
-  }, [users, members])
+    );
+  }, [users, members]);
+  useEffect(() => {
+    setNewDescription(description);
+    setNewName(name);
+  }, [name, description]);
 
   return (
     <Modal
@@ -148,7 +156,7 @@ const EditModal = ({ trigger, name, description = '', id }) => {
               <h3>Team description:</h3>
               <TextArea
                 className={styles.TextArea}
-                value={newDescription}
+                value={newDescription || ''}
                 onChange={(e) => setNewDescription(e.target.value)}
               />
             </Grid.Column>
@@ -202,7 +210,7 @@ const EditModal = ({ trigger, name, description = '', id }) => {
         </Button>
       </Modal.Actions>
     </Modal>
-  )
-}
+  );
+};
 
-export default EditModal
+export default EditModal;
