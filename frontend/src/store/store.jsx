@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from 'react';
 
-const initialState = { sideBarMode: 'boards', teams: [] };
+const initialState = { sideBarMode: 'boards', teams: [], lists: [] };
 const store = createContext(initialState);
 const { Provider } = store;
 
@@ -18,6 +18,9 @@ const StateProvider = ({ children }) => {
       }
       case 'SET_SIDEBAR_MODE': {
         return { ...state, sideBarMode: action.sideBarMode };
+      }
+      case 'SAVE_LISTS': {
+        return { ...state, lists: action.lists };
       }
       default:
         throw new Error();

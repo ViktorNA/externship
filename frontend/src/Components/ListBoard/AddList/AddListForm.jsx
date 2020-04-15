@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { addListToBoard } from '../../../utils/APIRequests.jsx';
 import createNotification from '../../../utils/Notifications.jsx';
-import { Button } from 'semantic-ui-react';
+import { Button, Input } from 'semantic-ui-react';
 import boarStyles from '../ListBoard.scss';
 import styles from './AddListFrom.scss';
 
@@ -30,7 +30,7 @@ const AddListFrom = ({ addList, id, index, boardId }) => {
           ref={provided.innerRef}
         >
           <form className={styles.addListForm} onSubmit={submitFrom}>
-            <input
+            <Input
               className={styles.nameInput}
               placeholder={'Enter list name...'}
               value={listName}

@@ -3,12 +3,14 @@ package com.example.trelloclone.services;
 import com.example.trelloclone.dao.*;
 import com.example.trelloclone.entities.*;
 import com.example.trelloclone.playloads.ApiResponse;
+import com.example.trelloclone.playloads.ListResponse;
 import com.example.trelloclone.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,9 +53,12 @@ public class BoardService {
     return new ResponseEntity<>(new ApiResponse(true, "Renamed successfully"), HttpStatus.OK);
   }
 
-  public ResponseEntity<List<ListEntity>> getBoardById(Long boardId, UserPrincipal user) {
+  public ResponseEntity<List<ListResponse>> getBoardById(Long boardId, UserPrincipal user) {
     if (isUserHasAccessToBoard(user.getId(), boardId)) {
-      return new ResponseEntity<>(boardRepository.getOne(boardId).getLists(), HttpStatus.OK);
+      List<ListResponse> lists = new ArrayList<>();
+      List<ListEntity> boardLists = boardRepository.getOne(boardId).getLists();
+      boardLists.parallelStream().forEach(listEntity -> lists.add(new ListResponse(listEntity)));
+      return new ResponseEntity<>(lists, HttpStatus.OK);
     }
     return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
   }

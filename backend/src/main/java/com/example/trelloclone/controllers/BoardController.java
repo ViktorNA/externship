@@ -1,9 +1,9 @@
 package com.example.trelloclone.controllers;
 
 import com.example.trelloclone.entities.BoardEntity;
-import com.example.trelloclone.entities.ListEntity;
 import com.example.trelloclone.entities.UserBoardEntity;
 import com.example.trelloclone.playloads.ApiResponse;
+import com.example.trelloclone.playloads.ListResponse;
 import com.example.trelloclone.security.CurrentUser;
 import com.example.trelloclone.security.UserPrincipal;
 import com.example.trelloclone.services.BoardService;
@@ -43,7 +43,7 @@ public class BoardController {
   }
 
   @GetMapping("/{boardId}")
-  public ResponseEntity<List<ListEntity>> getBoardById(
+  public ResponseEntity<List<ListResponse>> getBoardById(
       @PathVariable Long boardId, @CurrentUser UserPrincipal user) {
     return boardService.getBoardById(boardId, user);
   }

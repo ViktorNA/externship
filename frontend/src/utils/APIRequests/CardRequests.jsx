@@ -23,3 +23,18 @@ export const deleteCardById = (listId, cardId, callback) => {
       callback(res.data);
     });
 };
+
+export const changeCardsPositions = (
+  sourcePosition,
+  destinationPosition,
+  listId,
+  callback
+) => {
+  axios
+    .put(
+      `${BASE_URL}/cards/changePosition?sourcePosition=${sourcePosition}&destinationPosition=${destinationPosition}&listId=${listId}`,
+      {},
+      config()
+    )
+    .then((res) => callback(res));
+};

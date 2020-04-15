@@ -10,6 +10,7 @@ import {
   Divider,
   Segment,
   Label,
+  Form,
 } from 'semantic-ui-react';
 import {
   addUserToTeam,
@@ -154,11 +155,13 @@ const EditModal = ({ trigger, name, description = '', id }) => {
                 onChange={handleNewNameOnChange}
               />
               <h3>Team description:</h3>
-              <TextArea
-                className={styles.TextArea}
-                value={newDescription || ''}
-                onChange={(e) => setNewDescription(e.target.value)}
-              />
+              <Form>
+                <TextArea
+                  className={styles.TextArea}
+                  value={newDescription || ''}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                />
+              </Form>
             </Grid.Column>
 
             <Grid.Column>

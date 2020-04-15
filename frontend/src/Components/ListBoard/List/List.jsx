@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { deleteListFromBoard } from '../../../utils/APIRequests.jsx';
 import {
   addCardToList,
@@ -12,13 +12,19 @@ import Card from './Card/Card.jsx';
 import listStyles from './List.scss';
 import styles from '../ListBoard.scss';
 import iconStyles from '../../Icons.scss';
+import { useStore } from '../../../store/store.jsx';
 
 const List = ({ listName, index, id, boardId, deleteList }) => {
-  const [cards, setCards] = useState([]);
   const [newCardName, setNewCardName] = useState('');
-  useEffect(() => {
-    getCardsOfList(id, setCards);
-  }, []);
+  const [state, dispatch] = useStore();
+  const cards = state.lists.find((list) => list.id === id).cards || [];
+  const setCards = (newCards) => {
+    const { lists } = state;
+    const newLists = lists.map((list) =>
+      list.id === id ? { ...list, cards: newCards } : list
+    );
+    dispatch({ type: 'SAVE_LISTS', lists: newLists });
+  };
 
   const addCardCallback = (newCard) => {
     setCards([...cards, newCard]);
@@ -43,7 +49,7 @@ const List = ({ listName, index, id, boardId, deleteList }) => {
     deleteCardById(id, cardId, deleteCardCallback(cardId));
   };
   return (
-    <Draggable draggableId={`${id}`} index={index}>
+    <Draggable draggableId={`board-${id}`} index={index} type={'board'}>
       {(provided) => (
         <div
           className={styles.boardItem}
@@ -52,7 +58,7 @@ const List = ({ listName, index, id, boardId, deleteList }) => {
           ref={provided.innerRef}
         >
           <div>
-            {listName}
+            <span className={listStyles.listName}>{listName}</span>
             <div className={iconStyles.iconBox}>
               <Icon
                 onClick={deleteOnClick}
@@ -75,13 +81,24 @@ const List = ({ listName, index, id, boardId, deleteList }) => {
               </Button>
             </div>
           </form>
-          {cards.map((card) => (
-            <Card
-              key={card.id}
-              name={card.name}
-              deleteOnClick={() => deleteCard(card.id)}
-            />
-          ))}
+          <Droppable droppableId={`${id}`} type={'card'}>
+            {(provided) => (
+              <div
+                className={listStyles.cardsContainer}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {cards.map((card) => (
+                  <Card
+                    key={`card-${card.id}`}
+                    card={card}
+                    deleteOnClick={() => deleteCard(card.id)}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
       )}
     </Draggable>
